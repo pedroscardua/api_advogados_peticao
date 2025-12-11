@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  api_advogados:
+    image: pedroscardua/api_advogados_h:1
+    restart: always
+    environment:
+      - GEMINI_API_KEY=000
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      update_config:
+        parallelism: 1        # Atualiza um container por vez
+        delay: 10s            # Aguarda 10 segundos entre atualizações
+        order: start-first     # Inicia o novo container antes de remover o antigo
+        failure_action: rollback  # Em caso de erro, reverte para a versão anterior
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.secretarai_site.rule=Host(`api_advogados.com.br`)
+        - traefik.http.routers.secretarai_site.priority=100
+        - traefik.http.routers.secretarai_site.entrypoints=websecure
+        - traefik.http.services.secretarai_site.loadbalancer.sticky=true
+        - traefik.http.routers.secretarai_site.tls.certresolver=letsencryptresolver
+        - traefik.http.services.secretarai_site.loadbalancer.server.port=3000
+        - traefik.http.services.secretarai_site.loadbalancer.passHostHeader=true
+    networks:
+      - NETn8n
+      
+networks:
+  NETn8n:
+    external: true
