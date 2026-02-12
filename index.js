@@ -128,7 +128,7 @@ app.post('/llm/definir_tipo_de_peticao', async (req, res) => {
 
 app.post('/llm/dados_extract', async (req, res) => {
     try {
-        const { data, dados } = req.body;
+        const { data, dados, add_doc } = req.body;
         console.log("Reciving request /llm/dados_extract");
 
         if (!data || !Array.isArray(data)) {
@@ -139,21 +139,51 @@ app.post('/llm/dados_extract', async (req, res) => {
             return res.status(400).json({ error: 'Invalid input format. "dados" object is required.' });
         }
 
-        const start = Date.now();
         const geminiApiKey = process.env.GEMINI_API_KEY;
         if (!geminiApiKey) {
             return res.status(500).json({ error: 'GEMINI_API_KEY is not configured.' });
         }
 
-        const parts = data.map(item => ({
-            fileData: {
-                mimeType: item.mimeType,
-                fileUri: item.fileUri
-            }
-        }));
+        const parts = [];
+
+        // Add reference document if add_doc === 5
+        if (add_doc === 5) {
+            const fileManager = new GoogleAIFileManager(geminiApiKey);
+            const filePath = path.join(__dirname, 'arquivo_prompt', '005_ALTERADO_INFORMAÇÕES EXTRAÍDAS PARA PETIÇÃO INICIAL - CREDIVAR.docx');
+
+            const uploadResponse = await fileManager.uploadFile(filePath, {
+                mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                displayName: "005_ALTERADO_INFORMAÇÕES EXTRAÍDAS PARA PETIÇÃO INICIAL - CREDIVAR.docx",
+            });
+
+            console.log(`Uploaded reference file ${uploadResponse.file.displayName} as: ${uploadResponse.file.uri}`);
+
+            // Add the reference document first
+            parts.push({
+                fileData: {
+                    mimeType: uploadResponse.file.mimeType,
+                    fileUri: uploadResponse.file.uri
+                }
+            });
+        }
+
+        // Add files from the request body
+        data.forEach(item => {
+            parts.push({
+                fileData: {
+                    mimeType: item.mimeType,
+                    fileUri: item.fileUri
+                }
+            });
+        });
+
+        // Add text prompt with conditional instruction
+        const textPrompt = add_doc === 5
+            ? "O primeiro arquivo em anexo é um mapa de referência que indica onde encontrar as informações nos outros documentos. Use-o como guia para localizar e extrair as informações solicitadas dos demais documentos anexos."
+            : "Analise os documentos em anexo e extraia as informações solicitadas.";
 
         parts.push({
-            text: "Analise os documentos em anexo e extraia as informações solicitadas."
+            text: textPrompt
         });
 
         // Dynamic schema generation
