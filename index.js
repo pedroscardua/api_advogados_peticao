@@ -64,7 +64,7 @@ app.post('/llm/definir_tipo_de_peticao', async (req, res) => {
         });
 
         const response = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent?key=${geminiApiKey}`,
             {
                 contents: [
                     {
@@ -199,7 +199,7 @@ app.post('/llm/dados_extract', async (req, res) => {
         }
 
         const response = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent?key=${geminiApiKey}`,
             {
                 contents: [
                     {
@@ -292,7 +292,7 @@ app.post('/llm/process_with_files', async (req, res) => {
         }
 
         const response = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent?key=${geminiApiKey}`,
             {
                 contents: [
                     {
@@ -365,7 +365,7 @@ app.post('/llm/definir_nome', async (req, res) => {
         }
 
         const response = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent?key=${geminiApiKey}`,
             {
                 contents: [
                     {
@@ -443,7 +443,7 @@ app.post('/llm/alienacao/tem_veiculo', async (req, res) => {
         }
 
         const response = await axios.post(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiApiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent?key=${geminiApiKey}`,
             {
                 contents: [
                     {
