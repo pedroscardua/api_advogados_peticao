@@ -1,0 +1,5219 @@
+{
+  "name": "ANALSADOR  DOCs Form",
+  "nodes": [
+    {
+      "parameters": {
+        "jsCode": "let results = [];\n\nfor (const item of items) {\n  if (!item.binary) continue;\n\n  for (const key in item.binary) {\n    results.push({\n      json: {\n        fileName: item.binary[key].fileName\n      },\n      binary: {\n        data: item.binary[key]\n      }\n    });\n  }\n}\n\nreturn results;"
+      },
+      "id": "029d1269-bfd0-4269-ab60-73c75bb25750",
+      "name": "Files to list",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2368,
+        976
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "05ef8841-5538-429e-b493-2c64602c8c89",
+              "leftValue": "={{ $('Files to list').item.json.fileName }}",
+              "rightValue": "pdf",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -2208,
+        976
+      ],
+      "id": "bce07d28-ec22-4a3a-bdc7-905f2bbe0950",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "resource": "file",
+        "inputType": "binary"
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2016,
+        976
+      ],
+      "id": "ee814b65-3aa4-45c9-9bed-2320651255a0",
+      "name": "Upload a file1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "jTaoZXRVol8Xvz9A",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        -1840,
+        976
+      ],
+      "id": "7a06a480-8bec-4661-ad78-6722a671995a",
+      "name": "Aggregate1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.altheron.ai/llm/definir_nome",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -1632,
+        976
+      ],
+      "id": "46f699ce-ed62-4c0a-b858-32075c97033b",
+      "name": "Capturar Nome completo Cliente"
+    },
+    {
+      "parameters": {
+        "name": "={{ $('Files to list1').item.json.fileName }}",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $item(\"0\").$node[\"Create folder1\"].json[\"id\"] }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -928,
+        992
+      ],
+      "id": "77eef1b7-3951-4cf6-a66a-cdf4af243b47",
+      "name": "Upload file1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "=({{ $json.name }}) - Credivar",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "=1CHngkTiaDQIeQp5uzF6iaIdxv-9s1MOR",
+          "mode": "id"
+        },
+        "options": {
+          "folderColorRgb": "#FFE100"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1424,
+        976
+      ],
+      "id": "9b65158a-a0b2-4e9f-8f76-51411920adda",
+      "name": "Create folder1",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.1,
+      "position": [
+        -1232,
+        992
+      ],
+      "id": "461c76d1-9a46-4a74-bb2e-98fd2928dcbd",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "jsCode": "let results = [];\n\nfor (const item of items) {\n  if (!item.binary) continue;\n\n  for (const key in item.binary) {\n    results.push({\n      json: {\n        fileName: item.binary[key].fileName\n      },\n      binary: {\n        data: item.binary[key]\n      }\n    });\n  }\n}\n\nreturn results;"
+      },
+      "id": "bb00dde5-22f0-4630-9fd7-187057b87d05",
+      "name": "Files to list1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        992
+      ],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        992
+      ],
+      "id": "ce33925b-78ed-40d6-8ce8-59cae1e5d1af",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3b2027cc-df64-4298-97df-4a932859bf4b",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -640,
+        992
+      ],
+      "id": "f9254238-7fd4-4b80-a9fc-caa56c110d91",
+      "name": "Set Variaveis"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.altheron.ai/llm/definir_tipo_de_peticao",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -464,
+        992
+      ],
+      "id": "6dd43bd2-87cf-4b69-8f99-133224c0a897",
+      "name": "Avaliar tipo de petição"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "CÉDULA DE CRÉDITO BANCÁRIO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d71251f8-9383-4c7b-b7fc-16d783131807"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CÉDULA DE CRÉDITO BANCÁRIO"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "ad898621-3f9e-45ca-9d01-414420927da2",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "INSTRUMENTO PARTICULAR DE CONFISSÃO DE DÍVIDAS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "INSTRUMENTO PARTICULAR DE CONFISSÃO DE DÍVIDAS"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "a4ca9333-d2e7-4ee5-90c9-b08919f98c14",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "ALIENAÇÃO FIDUCIÁRIA DE VEÍCULOS E MAQUINÁRIOS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "ALIENAÇÃO FIDUCIÁRIA DE VEÍCULOS E MAQUINÁRIOS"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "7e474d72-2340-46ff-9b72-c01504c5bbd8",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "CÉDULA RURAL",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CÉDULA RURAL"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c510bcd5-0e8b-42a8-a6ee-95da71f3094a",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "CRÉDITO PRÉ-APROVADO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CRÉDITO PRÉ-APROVADO"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0388fd85-4d56-41aa-9815-3db842ae855b",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "CARTÃO DE CRÉDITO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "CARTÃO DE CRÉDITO"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c35803bd-426f-4a26-9507-924d0b669373",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "DESCONTO DE TÍTULOS",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "DESCONTO DE TÍTULOS"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f70100d5-2a18-40e4-a26a-c62ff1d9cba7",
+                    "leftValue": "={{ $json.type }}",
+                    "rightValue": "DOCUMENTO NÃO VÁLIDO PARA AÇÃO JUDICIAL",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "DOCUMENTO NÃO VÁLIDO PARA AÇÃO JUDICIAL"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -320,
+        896
+      ],
+      "id": "eef7c2d7-ea06-4d40-a1eb-8ce8aa930ae2",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.altheron.ai/llm/dados_extract",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        464,
+        1440
+      ],
+      "id": "12ecf525-158a-4e6c-a148-d2f453841ab8",
+      "name": "Dados necessarios"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "84a7816a-91d7-4254-9570-0a705459f587",
+              "name": "tipo_de_analise",
+              "value": "cartao_de_credito",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        1440
+      ],
+      "id": "54db9d87-defc-461c-846c-e29ebd322c65",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d31ead81-888e-4886-a077-e86f1cd6a0db",
+              "name": "data_hoje",
+              "value": "={{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('dd') }} de {{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('LLLL') }} de {{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('yyyy') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        1440
+      ],
+      "id": "abbbf3f1-095b-48fa-91f2-ef5d4d5941bd",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1_fsbVcMTKSTPhiO0P9e0Eeq8sT6IPZa8AQl3e2mNCQ4",
+          "mode": "id"
+        },
+        "name": "=processando___{{ $item(\"0\").$node[\"Capturar Nome completo Cliente\"].json[\"name\"] }} - PETIÇÃO - {{ $item(\"0\").$node[\"Avaliar tipo de petição\"].json[\"type\"] }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "4e09d395-679b-41ab-afeb-c86471c1d95f",
+      "name": "Google Drive",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1056,
+        1440
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "=PETIÇÃO",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $item(\"0\").$node[\"Create folder1\"].json[\"id\"] }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "7fb4a0b9-049d-4afd-9879-9c0c4b2dece1",
+      "name": "Google Drive1",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        864,
+        1440
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "simple": false,
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "{{comarca}}",
+              "replaceText": "={{ $('Edit Fields2').item.json.comarca }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualificacao_completa_reu}}",
+              "replaceText": "={{ $('Edit Fields2').item.json.qualificacao_completa_reu }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{segmento_cartao}}",
+              "replaceText": "={{ $('Edit Fields2').item.json.segmento_cartao }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_inicio_mora}}",
+              "replaceText": "={{ $('Edit Fields2').item.json.data_inicio_mora }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_debito_extenso}}",
+              "replaceText": "={{ $('Edit Fields2').item.json.valor_debito_extenso }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{documentos_comprobatorios_1}}",
+              "replaceText": "={{ $('Edit Fields2').item.json.documentos_comprobatorios_1 }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{documentos_comprobatorios_2}}",
+              "replaceText": "={{ $('Edit Fields2').item.json.documentos_comprobatorios_2 }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_causa_extenso}}",
+              "replaceText": "={{ $('Edit Fields2').item.json.valor_causa_extenso }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_assinatura}}",
+              "replaceText": "={{ $('Edit Fields2').item.json.data_assinatura }}",
+              "matchCase": true
+            }
+          ]
+        }
+      },
+      "id": "e49786c9-2efa-4a60-8f8c-8415b59c4316",
+      "name": "Google Docs1",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1216,
+        1440
+      ],
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "OsNA8G3MJQ8jMQz5",
+          "name": "Google Docs tercdrização"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive').item.json.id }}",
+          "mode": "id"
+        },
+        "newUpdatedFileName": "={{ $('Google Drive').item.json.name.replaceAll('processando___','A Revisar > ') }}",
+        "options": {}
+      },
+      "id": "ebbc532e-08c0-4680-9e8f-098202a8242c",
+      "name": "Google Drive2",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1360,
+        1440
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $node[\"Dados\"].json[\"id_email\"] }}",
+        "emailType": "text",
+        "message": "=A petição de {{ $item(\"0\").$node[\"Capturar Nome completo Cliente\"].json[\"name\"] }} - {{ $item(\"0\").$node[\"Avaliar tipo de petição\"].json[\"type\"] }} está pronta para revisão\n\nhttps://docs.google.com/document/d/{{ $node[\"Google Drive\"].json[\"id\"] }}/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1536,
+        1440
+      ],
+      "id": "f82563e2-1c2a-4890-92af-c65671ad412d",
+      "name": "Reply to a message",
+      "webhookId": "12dc1217-9316-47bf-9100-6d9836d72b67",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.altheron.ai/llm/dados_extract",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1968,
+        464
+      ],
+      "id": "f3010abe-2cf9-4037-a717-347b85e1000d",
+      "name": "Dados necessarios1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "2eb515eb-dccd-40ef-9235-ba29ba3d7842",
+              "name": "tipo_de_analise",
+              "value": "alienacao_fidunciaria_veiculo",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1792,
+        464
+      ],
+      "id": "7b0121f0-2f97-40ed-96a1-2a559b995f1c",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        448
+      ],
+      "id": "e9fbc85b-cfde-4eab-ade2-dc26ca4cbb70",
+      "name": "Edit Fields6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3b2027cc-df64-4298-97df-4a932859bf4b",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        48,
+        448
+      ],
+      "id": "76a77085-4411-4655-87f7-ceaac5edaf1f",
+      "name": "Set Variaveis5"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.altheron.ai/llm/alienacao/tem_veiculo",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        464,
+        448
+      ],
+      "id": "e48e4e96-8123-4999-96d0-47c690e29fc0",
+      "name": "Veiculo?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2c8a46cb-9cdf-453f-a947-9c26a1aee979",
+              "leftValue": "={{ $json.have_vehicle }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        672,
+        448
+      ],
+      "id": "aef9dd2d-6a9c-40a0-aabf-ac120534fa68",
+      "name": "tem veiculo"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3b2027cc-df64-4298-97df-4a932859bf4b",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "be05c860-2e4f-4a36-92e7-5a29c17571b0",
+              "name": "avalista1_nome",
+              "value": "Defina o nome completo do primeiro Avalista do carro",
+              "type": "string"
+            },
+            {
+              "id": "011008cf-28d4-46bf-8a96-4105eb0a80b5",
+              "name": "avalista1_nacionalidade",
+              "value": "Defina nacionalidade do primeiro Avalista do carro",
+              "type": "string"
+            },
+            {
+              "id": "a899170d-d36a-405b-b2c6-eaee28c6064f",
+              "name": "avalista1_estadocivil",
+              "value": "Defina estado civil do primeiro Avalista do carro",
+              "type": "string"
+            },
+            {
+              "id": "8724369d-f687-43dd-b1a2-641f2193c552",
+              "name": "avalista1_documento_numero",
+              "value": "Defina número de documento do primeiro Avalista do carro",
+              "type": "string"
+            },
+            {
+              "id": "05d36097-7d06-4828-8a11-fb1533788ba4",
+              "name": "avalista1_endereco_completo",
+              "value": "Defina o endereço completo do primeiro Avalista do carro",
+              "type": "string"
+            },
+            {
+              "id": "dea4f857-107e-477f-951e-89c8e4f0602a",
+              "name": "avalista2_nome",
+              "value": "Defina o nome completo do segundo Avalista do carro",
+              "type": "string"
+            },
+            {
+              "id": "2afaf011-1c1b-4f85-880d-40562ced4657",
+              "name": "avalista2_nacionalidade",
+              "value": "Defina nacionalidade do segundo Avalista do carro",
+              "type": "string"
+            },
+            {
+              "id": "a4fc95c9-ae23-407a-bd7b-2eafa4abe149",
+              "name": "avalista2_estadocivil",
+              "value": "Defina estado civil do segundo Avalista do carro",
+              "type": "string"
+            },
+            {
+              "id": "368acfdf-94ae-4610-bb71-1264d31d328b",
+              "name": "avalista2_documento_numero",
+              "value": "Defina número de documento do segundo Avalista do carro",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        944,
+        352
+      ],
+      "id": "0ebe2897-4410-4397-9ee2-ff26262ac402",
+      "name": "Set Variaveis6"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.altheron.ai/llm/process_with_files",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1360,
+        352
+      ],
+      "id": "7d23fa67-763c-482c-b949-1a153fe6db2d",
+      "name": "Dados necessarios2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "a1f4f610-1e7d-4cd9-831e-443fbaeaac44",
+              "name": "dados",
+              "value": "={{$json.removeField('data')}}",
+              "type": "object"
+            },
+            {
+              "id": "888c94d0-51f9-4410-b868-bc68cb9f518b",
+              "name": "input",
+              "value": "Analise os documentos em anexo, analise a parte onde fala sobre o veículo e os avaliadores do veículo e extraia as informações solicitadas",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1152,
+        352
+      ],
+      "id": "b5895ccc-bddf-448e-a83d-af6794dd89f3",
+      "name": "Edit Fields7"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d31ead81-888e-4886-a077-e86f1cd6a0db",
+              "name": "data_hoje",
+              "value": "={{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('dd') }} de {{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('LLLL') }} de {{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('yyyy') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2160,
+        464
+      ],
+      "id": "d4f2cf72-2e5d-43cd-b828-1c1146cf3fba",
+      "name": "Edit Fields8"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1UZGQRlQZF_oeQcaKdpJ66nE_KxlnTiT-7oFcoHfrGUI",
+          "mode": "id"
+        },
+        "name": "=processando___{{ $item(\"0\").$node[\"Capturar Nome completo Cliente\"].json[\"name\"] }} - PETIÇÃO - {{ $item(\"0\").$node[\"Avaliar tipo de petição\"].json[\"type\"] }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "c969b606-74fc-4363-9aa6-e500bb5d18c4",
+      "name": "Google Drive3",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2544,
+        464
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "=PETIÇÃO",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $item(\"0\").$node[\"Create folder1\"].json[\"id\"] }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "ae4f1817-ceeb-4af2-8bf5-862818257760",
+      "name": "Google Drive4",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        2352,
+        464
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive3').item.json.id }}",
+          "mode": "id"
+        },
+        "newUpdatedFileName": "={{ $('Google Drive3').item.json.name.replaceAll('processando___','A Revisar > ') }}",
+        "options": {}
+      },
+      "id": "b9ae4076-e0f3-489f-a6be-58fc21080a9d",
+      "name": "Google Drive5",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        3440,
+        448
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $node[\"Dados\"].json[\"id_email\"] }}",
+        "emailType": "text",
+        "message": "=A petição de {{ $item(\"0\").$node[\"Capturar Nome completo Cliente\"].json[\"name\"] }} - {{ $item(\"0\").$node[\"Avaliar tipo de petição\"].json[\"type\"] }} está pronta para revisão\n\nhttps://docs.google.com/document/d/{{ $node[\"Google Drive3\"].json[\"id\"] }}/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        3648,
+        448
+      ],
+      "id": "32770274-fe2a-411d-9b8a-a61bb79bc364",
+      "name": "Reply to a message1",
+      "webhookId": "12dc1217-9316-47bf-9100-6d9836d72b67",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2c8a46cb-9cdf-453f-a947-9c26a1aee979",
+              "leftValue": "={{ $node[\"Veiculo?\"].json[\"have_vehicle\"] }}",
+              "rightValue": "false",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2704,
+        464
+      ],
+      "id": "651c9a34-6c07-4839-9a8e-48617abcd837",
+      "name": "tem veiculo1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "simple": false,
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "{{comarca}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.comarca }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_reu}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.nome_reu }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualificacao_reu}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.qualificacao_reu }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_assinatura_contrato}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.data_assinatura_contrato }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{tipo_e_numero_contrato}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.tipo_e_numero_contrato }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_marca}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_marca }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_tipo}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_tipo }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_modelo}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_modelo }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_chassi}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_chassi }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_cor}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_cor }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_ano}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_ano }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_placa}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_placa }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_renavam}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_renavam }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_financiado}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.valor_financiado }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{descricao_parcelas}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.descricao_parcelas }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_parcela}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.valor_parcela }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_vencimento_primeira_parcela}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.data_vencimento_primeira_parcela }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_vencimento_ultima_parcela}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.data_vencimento_ultima_parcela }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{meio_constituicao_mora}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.meio_constituicao_mora }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_debito_atualizado}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.valor_debito_atualizado }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_intro_avalistas}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.texto_intro_avalistas }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_avalista_1}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.nome_avalista_1 }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualificacao_avalista_1}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.qualificacao_avalista_1 }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_avalista_2}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.nome_avalista_2 }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualificacao_avalista_2}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.qualificacao_avalista_2 }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_prazo_custas}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.texto_prazo_custas }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_causa}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.valor_causa }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_documento}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.data_documento }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{avalista1_nome}}",
+              "replaceText": "={{ $('Dados necessarios2').item.json.avalista1_nome }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{avalista1_nacionalidade}}",
+              "replaceText": "={{ $('Dados necessarios2').item.json.avalista1_nacionalidade }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{avalista1_estadocivil}}",
+              "replaceText": "={{ $('Dados necessarios2').item.json.avalista1_estadocivil }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{avalista1_documento_numero}}",
+              "replaceText": "={{ $('Dados necessarios2').item.json.avalista1_documento_numero }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{avalista1_endereco_completo}}",
+              "replaceText": "={{ $('Dados necessarios2').item.json.avalista1_endereco_completo }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{avalista2_nome}}",
+              "replaceText": "={{ $('Dados necessarios2').item.json.avalista2_nome }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{avalista2_nacionalidade}}",
+              "replaceText": "={{ $('Dados necessarios2').item.json.avalista2_nacionalidade }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{avalista2_estadocivil}}",
+              "replaceText": "={{ $('Dados necessarios2').item.json.avalista2_estadocivil }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{avalista2_documento_numero}}",
+              "replaceText": "={{ $('Dados necessarios2').item.json.avalista2_documento_numero }}",
+              "matchCase": true
+            }
+          ]
+        }
+      },
+      "id": "29f5fe22-de8b-4caa-9d28-37a09e5526ce",
+      "name": "Com carro",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        2928,
+        432
+      ],
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "OsNA8G3MJQ8jMQz5",
+          "name": "Google Docs tercdrização"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "simple": false,
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "{{comarca}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.comarca }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_reu}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.nome_reu }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualificacao_reu}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.qualificacao_reu }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_assinatura_contrato}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.data_assinatura_contrato }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{tipo_e_numero_contrato}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.tipo_e_numero_contrato }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_marca}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_marca }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_tipo}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_tipo }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_modelo}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_modelo }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_chassi}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_chassi }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_cor}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_cor }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_ano}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_ano }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_placa}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_placa }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{veiculo_renavam}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.veiculo_renavam }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_financiado}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.valor_financiado }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{descricao_parcelas}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.descricao_parcelas }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_parcela}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.valor_parcela }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_vencimento_primeira_parcela}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.data_vencimento_primeira_parcela }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_vencimento_ultima_parcela}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.data_vencimento_ultima_parcela }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{meio_constituicao_mora}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.meio_constituicao_mora }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_debito_atualizado}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.valor_debito_atualizado }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_intro_avalistas}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.texto_intro_avalistas }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_avalista_1}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.nome_avalista_1 }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualificacao_avalista_1}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.qualificacao_avalista_1 }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_avalista_2}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.nome_avalista_2 }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualificacao_avalista_2}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.qualificacao_avalista_2 }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_prazo_custas}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.texto_prazo_custas }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_causa}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.valor_causa }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_documento}}",
+              "replaceText": "={{ $('Edit Fields8').item.json.data_documento }}",
+              "matchCase": true
+            }
+          ]
+        }
+      },
+      "id": "0387d88a-e2c8-47e4-ac42-58b191bffdab",
+      "name": "Sem carro",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        3152,
+        480
+      ],
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "OsNA8G3MJQ8jMQz5",
+          "name": "Google Docs tercdrização"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "ALIENAÇÃO FIDUCIÁRIA DE VEÍCULOS E MAQUINÁRIOS",
+        "height": 272,
+        "width": 816
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        336
+      ],
+      "typeVersion": 1,
+      "id": "6760271c-bfe7-4e84-84fe-12364eaa0171",
+      "name": "Sticky Note29"
+    },
+    {
+      "parameters": {
+        "content": "CARTÃO DE CRÉDITO",
+        "height": 272,
+        "width": 816
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        1376
+      ],
+      "typeVersion": 1,
+      "id": "7c280256-89b3-48ef-a554-cf9d21ff44b1",
+      "name": "Sticky Note30"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.altheron.ai/llm/process_with_files",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        432,
+        1824
+      ],
+      "id": "ff8320db-fdb9-4295-8c98-26a55831df7d",
+      "name": "Dados necessarios3",
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $node[\"Dados\"].json[\"id_email\"] }}",
+        "emailType": "text",
+        "message": "=ALERTA! A petição de {{ $item(\"0\").$node[\"Capturar Nome completo Cliente\"].json[\"name\"] }} - {{ $item(\"0\").$node[\"Avaliar tipo de petição\"].json[\"type\"] }} \n\nMotivo:\n{{ $json.motivo }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        704,
+        1824
+      ],
+      "id": "8feb5dd5-3632-4508-8f4e-9b66d1315cfd",
+      "name": "Reply to a message2",
+      "webhookId": "12dc1217-9316-47bf-9100-6d9836d72b67",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "CEDULA RURAL\n",
+        "height": 304,
+        "width": 368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        672
+      ],
+      "typeVersion": 1,
+      "id": "7112f7fa-dceb-4e26-b0e5-55d2574e8879",
+      "name": "Sticky Note31"
+    },
+    {
+      "parameters": {
+        "content": "## DOCUMENTO NÃO VÁLIDO PARA AÇÃO JUDICIAL",
+        "height": 272,
+        "width": 1040
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        1696
+      ],
+      "typeVersion": 1,
+      "id": "3af0a602-9250-4b58-a71a-51c118880a38",
+      "name": "Sticky Note32"
+    },
+    {
+      "parameters": {
+        "content": "## credito pre aprovado",
+        "height": 304,
+        "width": 368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        1024
+      ],
+      "typeVersion": 1,
+      "id": "6c653490-5541-4baa-ba13-395e9a7b4776",
+      "name": "Sticky Note33"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.altheron.ai/llm/dados_extract",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        464,
+        1168
+      ],
+      "id": "3b593717-fe74-42cf-b54d-da48980a1869",
+      "name": "Dados necessarios4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "63f9f80e-06d4-4d51-81e6-246df8568dcc",
+              "name": "tipo_de_analise",
+              "value": "credito_pre_aprovado",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        1168
+      ],
+      "id": "0b4d224f-d17a-412b-82c7-ca46508cfdde",
+      "name": "Edit Fields12"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d31ead81-888e-4886-a077-e86f1cd6a0db",
+              "name": "data_hoje",
+              "value": "={{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('dd') }} de {{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('LLLL') }} de {{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('yyyy') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        1168
+      ],
+      "id": "49f161de-8053-4f79-8163-f12b4d7ee4af",
+      "name": "Edit Fields13"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1mA-xdPNWmJAvnSTeTxVPenrK-oJ_pOFKibGc17fK06U",
+          "mode": "id"
+        },
+        "name": "=processando___{{ $item(\"0\").$node[\"Capturar Nome completo Cliente\"].json[\"name\"] }} - PETIÇÃO - {{ $item(\"0\").$node[\"Avaliar tipo de petição\"].json[\"type\"] }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "5efff3d7-2bd9-4864-b983-789b85cfa942",
+      "name": "Google Drive6",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1056,
+        1168
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "=PETIÇÃO",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $item(\"0\").$node[\"Create folder1\"].json[\"id\"] }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "502ca554-1d20-4a92-9d79-7cfed6b55d1c",
+      "name": "Google Drive7",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        880,
+        1168
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive6').item.json.id }}",
+          "mode": "id"
+        },
+        "newUpdatedFileName": "={{ $('Google Drive6').item.json.name.replaceAll('processando___','A Revisar > ') }}",
+        "options": {}
+      },
+      "id": "d0c3986a-2ab9-4cbb-81ef-445a3b67c7bc",
+      "name": "Google Drive8",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1392,
+        1168
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $node[\"Dados\"].json[\"id_email\"] }}",
+        "emailType": "text",
+        "message": "=A petição de {{ $item(\"0\").$node[\"Capturar Nome completo Cliente\"].json[\"name\"] }} - {{ $item(\"0\").$node[\"Avaliar tipo de petição\"].json[\"type\"] }} está pronta para revisão\n\nhttps://docs.google.com/document/d/{{ $node[\"Google Drive6\"].json[\"id\"] }}/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1552,
+        1168
+      ],
+      "id": "7f22abdb-dd22-4569-b8a5-14b29b3a7fd4",
+      "name": "Reply to a message3",
+      "webhookId": "12dc1217-9316-47bf-9100-6d9836d72b67",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "simple": false,
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "{{comarca}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.comarca }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_reu}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.nome_reu }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualificacao_reu}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.qualificacao_reu }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_contrato}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.data_contrato }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{plataforma_contratacao}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.plataforma_contratacao }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{detalhes_contrato_valor}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.detalhes_contrato_valor }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_total_emprestimo}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.valor_total_emprestimo }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{quantidade_parcelas}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.quantidade_parcelas }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_parcela}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.valor_parcela }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{datas_pagamento_inicio_fim}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.datas_pagamento_inicio_fim }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{tipo_contrato_eletronico}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.tipo_contrato_eletronico }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_debito_total}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.valor_debito_total }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_condenacao}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.valor_condenacao }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{pedido_prazo_custas}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.pedido_prazo_custas }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_causa}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.valor_causa }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_documento}}",
+              "replaceText": "={{ $('Edit Fields13').item.json.data_documento }}",
+              "matchCase": true
+            }
+          ]
+        }
+      },
+      "id": "317fbb3f-babd-48ef-82a2-e13da4a0f6f3",
+      "name": "Google Docs",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1232,
+        1168
+      ],
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "OsNA8G3MJQ8jMQz5",
+          "name": "Google Docs tercdrização"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## CÉDULA DE CRÉDITO BANCÁRIO",
+        "height": 400,
+        "width": 368
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        0,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "adfe1991-3d83-4901-bd32-2842ca0ffca9",
+      "name": "Sticky Note34"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.altheron.ai/llm/dados_extract",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "add_doc",
+              "value": "5"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        464,
+        144
+      ],
+      "id": "bf75b004-633f-4701-95bd-e8e136af30f7",
+      "name": "Dados necessarios5"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "9810fcca-35d9-4446-bbf9-466b62ce577d",
+              "name": "tipo_de_analise",
+              "value": "celula_credito_bancario",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        144
+      ],
+      "id": "6d528a77-f151-4f86-a22b-e9a7a66ddde7",
+      "name": "Edit Fields14"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d31ead81-888e-4886-a077-e86f1cd6a0db",
+              "name": "data_hoje",
+              "value": "={{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('dd') }} de {{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('LLLL') }} de {{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('yyyy') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        672,
+        144
+      ],
+      "id": "a1abc2af-33ff-4e50-adf8-a5296d890d1f",
+      "name": "Edit Fields15"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "1JI5LbLU5CtOrMcD69kLz4rTHJ6O8TKgEQRVYEJi9AsI",
+          "mode": "id"
+        },
+        "name": "=processando___{{ $item(\"0\").$node[\"Capturar Nome completo Cliente\"].json[\"name\"] }} - PETIÇÃO - {{ $item(\"0\").$node[\"Avaliar tipo de petição\"].json[\"type\"] }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "7b58e689-9f7d-4235-8036-ad3b4e1e0f3e",
+      "name": "Google Drive9",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1056,
+        144
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "=PETIÇÃO",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $item(\"0\").$node[\"Create folder1\"].json[\"id\"] }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "b574f09f-dd9c-4093-ad5c-7ae04b224c63",
+      "name": "Google Drive10",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        880,
+        144
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive9').item.json.id }}",
+          "mode": "id"
+        },
+        "newUpdatedFileName": "={{ $('Google Drive9').item.json.name.replaceAll('processando___','A Revisar > ') }}",
+        "options": {}
+      },
+      "id": "1c8f8f6f-ac30-49cb-85e3-e3828039770a",
+      "name": "Google Drive11",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1328,
+        144
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $node[\"Dados\"].json[\"id_email\"] }}",
+        "emailType": "text",
+        "message": "=A petição de {{ $item(\"0\").$node[\"Capturar Nome completo Cliente\"].json[\"name\"] }} - {{ $item(\"0\").$node[\"Avaliar tipo de petição\"].json[\"type\"] }} está pronta para revisão\n\nhttps://docs.google.com/document/d/{{ $node[\"Google Drive9\"].json[\"id\"] }}/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1472,
+        144
+      ],
+      "id": "b12dabbf-1b17-4707-b8f3-6974c3b6ced9",
+      "name": "Reply to a message4",
+      "webhookId": "12dc1217-9316-47bf-9100-6d9836d72b67",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "simple": false,
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "{{comarca}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.comarca }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_empresa_executada}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.nome_empresa_executada }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualificacao_empresa_executada}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.qualificacao_empresa_executada }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_socio_executado}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.nome_socio_executado }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualificacao_socio_executado}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.qualificacao_socio_executado }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{numero_cedula_credito}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.numero_cedula_credito }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_emissao_cedula}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.data_emissao_cedula }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_empresa_executada_curto}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.nome_empresa_executada_curto }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_avalista}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.texto_avalista }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_socio_executado_avalista}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.nome_socio_executado_avalista }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_original_cedula}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.valor_original_cedula }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{numero_parcelas}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.numero_parcelas }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_parcela}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.valor_parcela }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_amortizacao_cotas}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.texto_amortizacao_cotas }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_execucao}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.valor_execucao }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_citacao}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.valor_citacao }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_interesse_audiencia}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.texto_interesse_audiencia }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_causa}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.valor_causa }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_documento}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.data_documento }}",
+              "matchCase": true
+            }
+          ]
+        }
+      },
+      "id": "94f44335-a910-46cc-b19e-03b0eaf65379",
+      "name": "Google Docs2",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        144
+      ],
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "OsNA8G3MJQ8jMQz5",
+          "name": "Google Docs tercdrização"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.altheron.ai/llm/dados_extract",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        448,
+        848
+      ],
+      "id": "d3a04398-4f06-4347-8d61-37b49550161f",
+      "name": "Dados necessarios6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "d6cc8196-63f4-447e-a1c9-5283ca4df5bb",
+              "name": "tipo_de_analise",
+              "value": "cedula_rural",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        848
+      ],
+      "id": "2bf8bcc5-dec0-4b12-a557-e3ca4999e832",
+      "name": "Edit Fields16"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d31ead81-888e-4886-a077-e86f1cd6a0db",
+              "name": "data_hoje",
+              "value": "={{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('dd') }} de {{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('LLLL') }} de {{ $now.setLocale('pt-BR').setZone('America/Sao_Paulo').format('yyyy') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        656,
+        848
+      ],
+      "id": "a1473834-146b-4bf1-b93a-ef4f1147ffac",
+      "name": "Edit Fields17"
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "18SN1sbxtGRwXFFU0JI_LqWRPl1h61a-4e8zJFfKW3F0",
+          "mode": "id"
+        },
+        "name": "=processando___{{ $item(\"0\").$node[\"Capturar Nome completo Cliente\"].json[\"name\"] }} - PETIÇÃO - {{ $item(\"0\").$node[\"Avaliar tipo de petição\"].json[\"type\"] }}",
+        "sameFolder": false,
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "912278ba-6fae-4d85-8d0b-f44ed4755657",
+      "name": "Google Drive12",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1040,
+        848
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "=PETIÇÃO",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "={{ $item(\"0\").$node[\"Create folder1\"].json[\"id\"] }}",
+          "mode": "id"
+        },
+        "options": {}
+      },
+      "id": "18365ac7-e911-4c7a-9c81-0a36f469b753",
+      "name": "Google Drive13",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        864,
+        848
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Drive12').item.json.id }}",
+          "mode": "id"
+        },
+        "newUpdatedFileName": "={{ $('Google Drive12').item.json.name.replaceAll('processando___','A Revisar > ') }}",
+        "options": {}
+      },
+      "id": "b0ed9aab-2ad6-41a8-920e-786930d2d254",
+      "name": "Google Drive14",
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1376,
+        848
+      ],
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $node[\"Dados\"].json[\"id_email\"] }}",
+        "emailType": "text",
+        "message": "=A petição de {{ $item(\"0\").$node[\"Capturar Nome completo Cliente\"].json[\"name\"] }} - {{ $item(\"0\").$node[\"Avaliar tipo de petição\"].json[\"type\"] }} está pronta para revisão\n\nhttps://docs.google.com/document/d/{{ $node[\"Google Drive12\"].json[\"id\"] }}/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1536,
+        848
+      ],
+      "id": "9e077cc1-6c34-4e14-95f8-b35c36e98e67",
+      "name": "Reply to a message5",
+      "webhookId": "12dc1217-9316-47bf-9100-6d9836d72b67",
+      "disabled": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "simple": false,
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "replaceAll",
+              "text": "{{comarca}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.comarca }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_devedor_principal}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.nome_devedor_principal }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualificacao_devedor_principal}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.qualificacao_devedor_principal }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{nome_garantidor}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.nome_garantidor }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualificacao_garantidor}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.qualificacao_garantidor }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{qualidade_garantidor}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.qualidade_garantidor }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{tipo_titulo}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.tipo_titulo }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_garantia_tipo}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.texto_garantia_tipo }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{cabecalho_titulo_execucao}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.cabecalho_titulo_execucao }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_garantia_hipotecaria}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.texto_garantia_hipotecaria }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_vencimento_cedula}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.data_vencimento_cedula }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_original_cedula}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.valor_original_cedula }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_execucao}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.valor_execucao }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_citacao}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.valor_citacao }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_limite_garantidor_citacao}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.texto_limite_garantidor_citacao }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_limite_valor_garantia}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.texto_limite_valor_garantia }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_limite_garantidor_penhora}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.texto_limite_garantidor_penhora }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{texto_indicacao_penhora_tipo}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.texto_indicacao_penhora_tipo }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{grau_garantia}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.grau_garantia }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{descricao_bem_garantia}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.descricao_bem_garantia }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{valor_causa}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.valor_causa }}",
+              "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{data_documento}}",
+              "replaceText": "={{ $('Edit Fields17').item.json.data_documento }}",
+              "matchCase": true
+            }
+          ]
+        }
+      },
+      "id": "9befde24-5c04-45e9-8890-963fa37fd068",
+      "name": "Google Docs4",
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        848
+      ],
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "OsNA8G3MJQ8jMQz5",
+          "name": "Google Docs tercdrização"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "Analisar documentos",
+        "formDescription": "Analisar documentos para gerar petição\nselecione todos os arquivos de do cliente para gerar a petição ",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Arquivos",
+              "fieldType": "file",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -2544,
+        976
+      ],
+      "id": "05ed959b-4c26-457b-813a-2d042464059d",
+      "name": "On form submission",
+      "webhookId": "028be3c5-703d-46e2-8f50-e60a602068db"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "a1f4f610-1e7d-4cd9-831e-443fbaeaac44",
+              "name": "dados",
+              "value": "={{$json.removeField('data')}}",
+              "type": "object"
+            },
+            {
+              "id": "d6cc8196-63f4-447e-a1c9-5283ca4df5bb",
+              "name": "tipo_de_analise",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        688
+      ],
+      "id": "2802d605-0555-4737-84e7-213f0b75ff36",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3b2027cc-df64-4298-97df-4a932859bf4b",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "e754a123-325f-4acc-adf1-c9c13d134db6",
+              "name": "pessoa_nome_completo",
+              "value": "Nome completo do cliente que aparece na maioria dos documentos",
+              "type": "string"
+            },
+            {
+              "id": "68dc451b-f11a-47ba-a270-d797fe12138e",
+              "name": "cidade_estado",
+              "value": "nome da cidade e Sigla do Estado. Exemplo: Vitória/ES",
+              "type": "string"
+            },
+            {
+              "id": "da4631f9-5779-4c15-a0d1-d707f8fa5094",
+              "name": "pessoa_tipo_escrito",
+              "value": "Defina se cliente é \"Pessoa Jurídica\" ou \"Pessoa Física\"",
+              "type": "string"
+            },
+            {
+              "id": "61d5bdf5-ea3d-4388-acef-af3fa35ecc66",
+              "name": "pessoa_tipo_siglas",
+              "value": "Defina se cliente é \"CNPJ\" ou \"CPF\"",
+              "type": "string"
+            },
+            {
+              "id": "d621af83-0e66-4322-8653-ebb9fe3be76c",
+              "name": "pessoa_documento_numero",
+              "value": "Defina o número de documento do cliente, cnpj ou cpf",
+              "type": "string"
+            },
+            {
+              "id": "2e52f155-6ba0-44b1-955b-76703a25b8a1",
+              "name": "pessoa_nacionalidade",
+              "value": "Defina a nacionalidade do cliente",
+              "type": "string"
+            },
+            {
+              "id": "71046622-c4dc-424c-bbd9-3e0adb962f07",
+              "name": "pessoa_estadocivil",
+              "value": "Defina o estado civil do cliente, caso cnpj deixe vazio",
+              "type": "string"
+            },
+            {
+              "id": "dc038138-f0a3-44bc-96bd-831350a857b2",
+              "name": "pessoa_profissao",
+              "value": "Defina a profissão do cliente, caso cnpj deixe vazio",
+              "type": "string"
+            },
+            {
+              "id": "b3d1b941-1272-4e87-b22b-7d0da01a2ab3",
+              "name": "endereco_logradouro",
+              "value": "Inicio do endereço, defina o logradouro do cliente",
+              "type": "string"
+            },
+            {
+              "id": "9572db2b-72b6-45a3-bd7f-b47aaaa80d48",
+              "name": "endereco_numero",
+              "value": "Número do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "4f378911-c94b-4103-9554-67527e836361",
+              "name": "endereco_complemento",
+              "value": "Complemento do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "e0a8d6c6-6ae8-443e-bc6d-265a96313bfd",
+              "name": "endereco_bairro",
+              "value": "Bairro do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "1eb2578a-69ae-4f31-9710-f72e892d662d",
+              "name": "endereco_cep",
+              "value": "Cep do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "67094d7a-641e-4bf2-8745-ef5ee99581f7",
+              "name": "inadimplencia_valor",
+              "value": "Defina o valor da inadimplencia anunciada. Formato: R$ x00.000,00",
+              "type": "string"
+            },
+            {
+              "id": "9711a8a9-113c-4055-98da-a96ec7c8f7fa",
+              "name": "inadimplencia_valor_escrito",
+              "value": "Defina o valor da inadimplencia anunciada. escreva o valor por extenso",
+              "type": "string"
+            },
+            {
+              "id": "5179ab2f-b77d-43c2-9190-efec982c4fb8",
+              "name": "caso_empresa_representante",
+              "value": "Caso pessoa fisica, deixe esse campo vazio. Caso Pessoa jurídica, Preencha esse campo com os dados do representante, Nome Completo, Nacionalidade, Estado Civil, Profissao, inscrito no CPF número <cpf numero>, residente e domiciliado na cidade de <cidade / sigla estado>, <endereço completo com cep>",
+              "type": "string"
+            },
+            {
+              "id": "a31a74d3-6623-4abd-b6a3-14eddb197354",
+              "name": "cedula_rural_numero",
+              "value": "Defina o número da Cédula de Produto Rural",
+              "type": "string"
+            },
+            {
+              "id": "fa935766-2521-48c0-ac8d-ae59b5694778",
+              "name": "cedula_rural_data",
+              "value": "Defina a data de emissão da Cédula de Produto Rural. Formato: DD/MM/YYYY",
+              "type": "string"
+            },
+            {
+              "id": "2cda8f4f-fa54-48bd-9128-a2afac7e1561",
+              "name": "garantia_text_nome",
+              "value": "descreva a garantia e nome do garantidor, exemplo: \"com garantia hipotecária de <nome completo>\"",
+              "type": "string"
+            },
+            {
+              "id": "c916516f-a12d-4b48-8498-32a4ab2567ab",
+              "name": "cedula_rural_vencimento",
+              "value": "Defina a data de vencimento da Cédula de Produto Rural. Formato: DD/MM/YYYY",
+              "type": "string"
+            },
+            {
+              "id": "84f1f6ef-5527-44d2-8b00-9894cfd3443c",
+              "name": "cedula_rural_valor",
+              "value": "Defina o valor da Cédula de Produto Rural. Formato: R$ x00.000,00",
+              "type": "string"
+            },
+            {
+              "id": "842fbd86-e849-4999-bdd4-969c968e61a1",
+              "name": "cedula_rural_valor_escrito",
+              "value": "Defina o valor da Cédula de Produto Rural. escreva o valor por extenso",
+              "type": "string"
+            },
+            {
+              "id": "bcdd1c86-1419-42f0-bf3b-37fe01906361",
+              "name": "execultado_nome",
+              "value": "Defina o nome da pessoa denominada executado",
+              "type": "string"
+            },
+            {
+              "id": "add627ab-31b5-4c34-ae89-c447f31d95c4",
+              "name": "garantia_describe",
+              "value": "descreva a garantia, exemplo: \"garantida de forma hipotecária pelo(a) segundo(a) executado(a),\"",
+              "type": "string"
+            },
+            {
+              "id": "69303356-799a-464c-96c4-412791a84b95",
+              "name": "pessoa_garantidora",
+              "value": "Preencha esse campo com os dados da pessoa garantidora, Nome Completo, Nacionalidade, Estado Civil, Profissao, inscrito no CPF número <cpf numero>, residente e domiciliado na cidade de <cidade / sigla estado>, <endereço completo com cep>",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        48,
+        688
+      ],
+      "id": "f0545de1-b26e-441d-b225-41d1c121172c",
+      "name": "Set Variaveis12"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3b2027cc-df64-4298-97df-4a932859bf4b",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "e754a123-325f-4acc-adf1-c9c13d134db6",
+              "name": "pessoa_nome_completo",
+              "value": "Nome completo do cliente que aparece na maioria dos documentos",
+              "type": "string"
+            },
+            {
+              "id": "68dc451b-f11a-47ba-a270-d797fe12138e",
+              "name": "cidade_estado",
+              "value": "nome da cidade e Sigla do Estado. Exemplo: Vitória/ES",
+              "type": "string"
+            },
+            {
+              "id": "da4631f9-5779-4c15-a0d1-d707f8fa5094",
+              "name": "pessoa_tipo_escrito",
+              "value": "Defina se cliente é \"Pessoa Jurídica\" ou \"Pessoa Física\"",
+              "type": "string"
+            },
+            {
+              "id": "61d5bdf5-ea3d-4388-acef-af3fa35ecc66",
+              "name": "pessoa_tipo_siglas",
+              "value": "Defina se cliente é \"CNPJ\" ou \"CPF\"",
+              "type": "string"
+            },
+            {
+              "id": "d621af83-0e66-4322-8653-ebb9fe3be76c",
+              "name": "pessoa_documento_numero",
+              "value": "Defina o número de documento do cliente, cnpj ou cpf",
+              "type": "string"
+            },
+            {
+              "id": "2e52f155-6ba0-44b1-955b-76703a25b8a1",
+              "name": "pessoa_nacionalidade",
+              "value": "Defina a nacionalidade do cliente",
+              "type": "string"
+            },
+            {
+              "id": "71046622-c4dc-424c-bbd9-3e0adb962f07",
+              "name": "pessoa_estadocivil",
+              "value": "Defina o estado civil do cliente",
+              "type": "string"
+            },
+            {
+              "id": "dc038138-f0a3-44bc-96bd-831350a857b2",
+              "name": "pessoa_profissao",
+              "value": "Defina a profissão do cliente",
+              "type": "string"
+            },
+            {
+              "id": "b3d1b941-1272-4e87-b22b-7d0da01a2ab3",
+              "name": "endereco_logradouro",
+              "value": "Inicio do endereço, defina o logradouro do cliente",
+              "type": "string"
+            },
+            {
+              "id": "9572db2b-72b6-45a3-bd7f-b47aaaa80d48",
+              "name": "endereco_numero",
+              "value": "Número do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "4f378911-c94b-4103-9554-67527e836361",
+              "name": "endereco_complemento",
+              "value": "Complemento do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "e0a8d6c6-6ae8-443e-bc6d-265a96313bfd",
+              "name": "endereco_bairro",
+              "value": "Bairro do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "1eb2578a-69ae-4f31-9710-f72e892d662d",
+              "name": "endereco_cep",
+              "value": "Cep do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "79428dfb-f305-45fe-ae37-1517ca4b1d1e",
+              "name": "plataforma_nome",
+              "value": "Defina o nome da empresa de crédito autora",
+              "type": "string"
+            },
+            {
+              "id": "84199c76-c314-4a36-9c9c-4c7ee297898a",
+              "name": "contrato_numero",
+              "value": "Defina o número do contrato",
+              "type": "string"
+            },
+            {
+              "id": "5f74e493-5200-469b-8ef8-d0288ec3c705",
+              "name": "contrato_valor",
+              "value": "Defina o valor total do contrato. Formato: R$ x00.000,00",
+              "type": "string"
+            },
+            {
+              "id": "b945de64-819b-458a-aab8-a67528adf152",
+              "name": "contrato_valor_escrito",
+              "value": "Defina o valor total do contrato. escreva o valor por extenso",
+              "type": "string"
+            },
+            {
+              "id": "c0ba51e4-5231-4be7-b9d9-1045297825ad",
+              "name": "emprestimo_data_inicio",
+              "value": "Defina a data inicial que o cliente contratou o emprestimo. Formato: DD/MM/YYYY",
+              "type": "string"
+            },
+            {
+              "id": "495e4acf-4024-4d69-bf75-9299ab895b77",
+              "name": "emprestimo_valor",
+              "value": "Defina o valor do emprestimo recebido pelo cliente",
+              "type": "string"
+            },
+            {
+              "id": "a8d20bc4-e3a7-4138-9e6b-41b919f32a28",
+              "name": "emprestimo_valor_escrito",
+              "value": "Defina o valor do emprestimo recebido pelo cliente. escreva o valor por extenso",
+              "type": "string"
+            },
+            {
+              "id": "6cb68b48-3e4e-435b-9d76-af29edc211c5",
+              "name": "parcelas_numero",
+              "value": "Defina o número de parcelas que o emprestimo foi acordado",
+              "type": "string"
+            },
+            {
+              "id": "9b9f3af7-b877-4354-9b5c-9a8bc3b38c19",
+              "name": "parcelas_numero_escrito",
+              "value": "Defina o número de parcelas que o emprestimo foi acordado. escreva o número por extenso",
+              "type": "string"
+            },
+            {
+              "id": "b948199c-3b57-4637-915d-0974a39f779b",
+              "name": "parcela_valor",
+              "value": "Defina o valor de parcelas que o emprestimo foi acordado. Formato: R$ x00.000,00",
+              "type": "string"
+            },
+            {
+              "id": "08a7421d-a640-4adb-b612-90eaf65a8c92",
+              "name": "parcela_valor_escrito",
+              "value": "Defina o valor de parcelas que o emprestimo foi acordado. escreva o valor por extenso",
+              "type": "string"
+            },
+            {
+              "id": "387cfd97-7110-45f7-89bb-56193377475f",
+              "name": "parcela_data_inicio",
+              "value": "Defina a data da primeira parcela. Formato: DD/MM/YYYY",
+              "type": "string"
+            },
+            {
+              "id": "cda3fe9b-d4af-4d7c-a915-cbc2c0130d3f",
+              "name": "parcela_data_fim",
+              "value": "Defina a data da última parcela. Formato: DD/MM/YYYY",
+              "type": "string"
+            },
+            {
+              "id": "67094d7a-641e-4bf2-8745-ef5ee99581f7",
+              "name": "inadimplencia_valor",
+              "value": "Defina o valor da inadimplencia anunciada. Formato: R$ x00.000,00",
+              "type": "string"
+            },
+            {
+              "id": "9711a8a9-113c-4055-98da-a96ec7c8f7fa",
+              "name": "inadimplencia_valor_escrito",
+              "value": "Defina o valor da inadimplencia anunciada. escreva o valor por extenso",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        48,
+        1024
+      ],
+      "id": "56839494-21f7-4ccb-96cf-60a7bb0365ec",
+      "name": "Set Variaveis10"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "a1f4f610-1e7d-4cd9-831e-443fbaeaac44",
+              "name": "dados",
+              "value": "={{$json.removeField('data')}}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        1024
+      ],
+      "id": "37ada5cd-8e8b-47e5-9e3d-b9b74a6b0818",
+      "name": "Edit Fields18"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3b2027cc-df64-4298-97df-4a932859bf4b",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "e754a123-325f-4acc-adf1-c9c13d134db6",
+              "name": "pessoa_nome_completo",
+              "value": "Nome completo do cliente que aparece na maioria dos documentos",
+              "type": "string"
+            },
+            {
+              "id": "68dc451b-f11a-47ba-a270-d797fe12138e",
+              "name": "cidade_estado",
+              "value": "nome da cidade e Sigla do Estado. Exemplo: Vitória/ES",
+              "type": "string"
+            },
+            {
+              "id": "da4631f9-5779-4c15-a0d1-d707f8fa5094",
+              "name": "pessoa_tipo_escrito",
+              "value": "Defina se cliente é \"Pessoa Jurídica\" ou \"Pessoa Física\"",
+              "type": "string"
+            },
+            {
+              "id": "61d5bdf5-ea3d-4388-acef-af3fa35ecc66",
+              "name": "pessoa_tipo_siglas",
+              "value": "Defina se cliente é \"CNPJ\" ou \"CPF\"",
+              "type": "string"
+            },
+            {
+              "id": "d621af83-0e66-4322-8653-ebb9fe3be76c",
+              "name": "pessoa_documento_numero",
+              "value": "Defina o número de documento do cliente, cnpj ou cpf",
+              "type": "string"
+            },
+            {
+              "id": "2e52f155-6ba0-44b1-955b-76703a25b8a1",
+              "name": "pessoa_nacionalidade",
+              "value": "Defina a nacionalidade do cliente",
+              "type": "string"
+            },
+            {
+              "id": "71046622-c4dc-424c-bbd9-3e0adb962f07",
+              "name": "pessoa_estadocivil",
+              "value": "Defina o estado civil do cliente",
+              "type": "string"
+            },
+            {
+              "id": "dc038138-f0a3-44bc-96bd-831350a857b2",
+              "name": "pessoa_profissao",
+              "value": "Defina a profissão do cliente",
+              "type": "string"
+            },
+            {
+              "id": "b3d1b941-1272-4e87-b22b-7d0da01a2ab3",
+              "name": "endereco_logradouro",
+              "value": "Inicio do endereço, defina o logradouro do cliente",
+              "type": "string"
+            },
+            {
+              "id": "9572db2b-72b6-45a3-bd7f-b47aaaa80d48",
+              "name": "endereco_numero",
+              "value": "Número do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "4f378911-c94b-4103-9554-67527e836361",
+              "name": "endereco_complemento",
+              "value": "Complemento do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "e0a8d6c6-6ae8-443e-bc6d-265a96313bfd",
+              "name": "endereco_bairro",
+              "value": "Bairro do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "1eb2578a-69ae-4f31-9710-f72e892d662d",
+              "name": "endereco_cep",
+              "value": "Cep do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "79428dfb-f305-45fe-ae37-1517ca4b1d1e",
+              "name": "cooperativa_nome",
+              "value": "Defina o nome da cooperativa de crédito autora, analise o documento <dados portador>",
+              "type": "string"
+            },
+            {
+              "id": "c0ba51e4-5231-4be7-b9d9-1045297825ad",
+              "name": "debito_inicio",
+              "value": "Defina a data inicial que o cliente parou de realizar os pagamentos à cooperativa de crédito. Formato: DD/MM/YYYY",
+              "type": "string"
+            },
+            {
+              "id": "5f74e493-5200-469b-8ef8-d0288ec3c705",
+              "name": "debito_valor",
+              "value": "Defina o valor que a cooperativa é credora. Formato: R$ x00.000,00",
+              "type": "string"
+            },
+            {
+              "id": "b945de64-819b-458a-aab8-a67528adf152",
+              "name": "debito_valor_escrito",
+              "value": "Defina o valor que a cooperativa é credora. escreva o valor por extenso",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        48,
+        1312
+      ],
+      "id": "546d1495-626a-47e8-b846-52f0d962b820",
+      "name": "Set Variaveis11"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "a1f4f610-1e7d-4cd9-831e-443fbaeaac44",
+              "name": "dados",
+              "value": "={{$json.removeField('data')}}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        1312
+      ],
+      "id": "5b9b709e-1606-4622-9bcb-9210045330d1",
+      "name": "Edit Fields10"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "a1f4f610-1e7d-4cd9-831e-443fbaeaac44",
+              "name": "dados",
+              "value": "={{$json.removeField('data')}}",
+              "type": "object"
+            },
+            {
+              "id": "888c94d0-51f9-4410-b868-bc68cb9f518b",
+              "name": "input",
+              "value": "Analise os documentos em anexo, a análise anterior definiu como \"DOCUMENTO NÃO VÁLIDO PARA AÇÃO JUDICIAL\" Descreva em poucas linhas o motivo",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        1664
+      ],
+      "id": "7ac63bd8-195a-4f16-8c99-a7e12c3f31c8",
+      "name": "Edit Fields11"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3b2027cc-df64-4298-97df-4a932859bf4b",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "f2e2c1d0-c676-47e0-8704-a7f301652cc2",
+              "name": "motivo",
+              "value": "Descreva o motivo de ter sido marcado como DOCUMENTO NÃO VÁLIDO PARA AÇÃO JUDICIAL",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        16,
+        1824
+      ],
+      "id": "cc265b85-cfb8-4c39-9dec-67deb093f8b0",
+      "name": "Set Variaveis13"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3b2027cc-df64-4298-97df-4a932859bf4b",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "e754a123-325f-4acc-adf1-c9c13d134db6",
+              "name": "pessoa_nome_completo",
+              "value": "Nome completo do cliente que aparece na maioria dos documentos",
+              "type": "string"
+            },
+            {
+              "id": "68dc451b-f11a-47ba-a270-d797fe12138e",
+              "name": "cidade_estado",
+              "value": "nome da cidade e Sigla do Estado. Exemplo: Vitória/ES",
+              "type": "string"
+            },
+            {
+              "id": "da4631f9-5779-4c15-a0d1-d707f8fa5094",
+              "name": "pessoa_tipo_escrito",
+              "value": "Defina se cliente é \"Pessoa Jurídica\" ou \"Pessoa Física\"",
+              "type": "string"
+            },
+            {
+              "id": "61d5bdf5-ea3d-4388-acef-af3fa35ecc66",
+              "name": "pessoa_tipo_siglas",
+              "value": "Defina se cliente é \"CNPJ\" ou \"CPF\"",
+              "type": "string"
+            },
+            {
+              "id": "d621af83-0e66-4322-8653-ebb9fe3be76c",
+              "name": "pessoa_documento_numero",
+              "value": "Defina o número de documento do cliente, cnpj ou cpf",
+              "type": "string"
+            },
+            {
+              "id": "2e52f155-6ba0-44b1-955b-76703a25b8a1",
+              "name": "pessoa_nacionalidade",
+              "value": "Defina a nacionalidade do cliente",
+              "type": "string"
+            },
+            {
+              "id": "71046622-c4dc-424c-bbd9-3e0adb962f07",
+              "name": "pessoa_estadocivil",
+              "value": "Defina o estado civil do cliente, caso cnpj deixe vazio",
+              "type": "string"
+            },
+            {
+              "id": "dc038138-f0a3-44bc-96bd-831350a857b2",
+              "name": "pessoa_profissao",
+              "value": "Defina a profissão do cliente, caso cnpj deixe vazio",
+              "type": "string"
+            },
+            {
+              "id": "b3d1b941-1272-4e87-b22b-7d0da01a2ab3",
+              "name": "endereco_logradouro",
+              "value": "Inicio do endereço, defina o logradouro do cliente",
+              "type": "string"
+            },
+            {
+              "id": "9572db2b-72b6-45a3-bd7f-b47aaaa80d48",
+              "name": "endereco_numero",
+              "value": "Número do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "4f378911-c94b-4103-9554-67527e836361",
+              "name": "endereco_complemento",
+              "value": "Complemento do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "e0a8d6c6-6ae8-443e-bc6d-265a96313bfd",
+              "name": "endereco_bairro",
+              "value": "Bairro do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "1eb2578a-69ae-4f31-9710-f72e892d662d",
+              "name": "endereco_cep",
+              "value": "Cep do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "495e4acf-4024-4d69-bf75-9299ab895b77",
+              "name": "credito_valor",
+              "value": "Defina o valor do crétido contratado pelo cliente. Formato: R$ x00.000,00",
+              "type": "string"
+            },
+            {
+              "id": "a8d20bc4-e3a7-4138-9e6b-41b919f32a28",
+              "name": "credito_valor_escrito",
+              "value": "Defina o valor do crétido contratado pelo cliente. escreva o valor por extenso",
+              "type": "string"
+            },
+            {
+              "id": "6cb68b48-3e4e-435b-9d76-af29edc211c5",
+              "name": "parcelas_numero",
+              "value": "Defina o número de parcelas que o crétido foi acordado",
+              "type": "string"
+            },
+            {
+              "id": "9b9f3af7-b877-4354-9b5c-9a8bc3b38c19",
+              "name": "parcelas_numero_escrito",
+              "value": "Defina o número de parcelas que o crétido foi acordado. escreva o número por extenso",
+              "type": "string"
+            },
+            {
+              "id": "b948199c-3b57-4637-915d-0974a39f779b",
+              "name": "parcela_valor",
+              "value": "Defina o valor de parcelas que o emprestimo foi acordado. Formato: R$ x00.000,00",
+              "type": "string"
+            },
+            {
+              "id": "08a7421d-a640-4adb-b612-90eaf65a8c92",
+              "name": "parcela_valor_escrito",
+              "value": "Defina o valor de parcelas que o emprestimo foi acordado. escreva o valor por extenso",
+              "type": "string"
+            },
+            {
+              "id": "387cfd97-7110-45f7-89bb-56193377475f",
+              "name": "parcela_data_inicio",
+              "value": "Defina a data da primeira parcela. Formato: DD/MM/YYYY",
+              "type": "string"
+            },
+            {
+              "id": "cda3fe9b-d4af-4d7c-a915-cbc2c0130d3f",
+              "name": "parcela_data_fim",
+              "value": "Defina a data da última parcela. Formato: DD/MM/YYYY",
+              "type": "string"
+            },
+            {
+              "id": "67094d7a-641e-4bf2-8745-ef5ee99581f7",
+              "name": "inadimplencia_valor",
+              "value": "Defina o valor da inadimplencia anunciada. Formato: R$ x00.000,00",
+              "type": "string"
+            },
+            {
+              "id": "9711a8a9-113c-4055-98da-a96ec7c8f7fa",
+              "name": "inadimplencia_valor_escrito",
+              "value": "Defina o valor da inadimplencia anunciada. escreva o valor por extenso",
+              "type": "string"
+            },
+            {
+              "id": "5179ab2f-b77d-43c2-9190-efec982c4fb8",
+              "name": "caso_empresa_representante",
+              "value": "Caso pessoa fisica, deixe esse campo vazio. Caso Pessoa jurídica, Preencha esse campo com os dados do representante, Nome Completo, Nacionalidade, Estado Civil, Profissao, inscrito no CPF número <cpf numero>, residente e domiciliado na cidade de <cidade / sigla estado>, <endereço completo com cep>",
+              "type": "string"
+            },
+            {
+              "id": "a31a74d3-6623-4abd-b6a3-14eddb197354",
+              "name": "cedula_credito_numero",
+              "value": "Defina o número da Cédula de Crédito Bancário",
+              "type": "string"
+            },
+            {
+              "id": "fa935766-2521-48c0-ac8d-ae59b5694778",
+              "name": "cedula_credito_data",
+              "value": "Defina a data de emissão da Cédula de Crédito Bancário. Formato: DD/MM/YYYY",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        48,
+        16
+      ],
+      "id": "41871a01-1c67-4859-a719-89fca09f1679",
+      "name": "Set Variaveis14"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $json.data }}",
+              "type": "array"
+            },
+            {
+              "id": "a1f4f610-1e7d-4cd9-831e-443fbaeaac44",
+              "name": "dados",
+              "value": "={{$json.removeField('data')}}",
+              "type": "object"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        16
+      ],
+      "id": "e43d9578-34e7-4bcf-b75a-a23ae4b59029",
+      "name": "Edit Fields19"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "f617854c-cb4e-482c-b2db-2546773e5888",
+              "name": "dados",
+              "value": "={{$json.removeField('data')}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1776,
+        304
+      ],
+      "id": "220c4c97-5097-4090-aef0-99d32b9e8d33",
+      "name": "Edit Fields20"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3b2027cc-df64-4298-97df-4a932859bf4b",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "e754a123-325f-4acc-adf1-c9c13d134db6",
+              "name": "pessoa_nome_completo",
+              "value": "Nome completo do cliente que aparece na maioria dos documentos",
+              "type": "string"
+            },
+            {
+              "id": "68dc451b-f11a-47ba-a270-d797fe12138e",
+              "name": "cidade_estado",
+              "value": "nome da cidade e Sigla do Estado. Exemplo: Vitória/ES",
+              "type": "string"
+            },
+            {
+              "id": "da4631f9-5779-4c15-a0d1-d707f8fa5094",
+              "name": "pessoa_tipo_escrito",
+              "value": "Defina se cliente é \"Pessoa Jurídica\" ou \"Pessoa Física\"",
+              "type": "string"
+            },
+            {
+              "id": "61d5bdf5-ea3d-4388-acef-af3fa35ecc66",
+              "name": "pessoa_tipo_siglas",
+              "value": "Defina se cliente é \"CNPJ\" ou \"CPF\"",
+              "type": "string"
+            },
+            {
+              "id": "d621af83-0e66-4322-8653-ebb9fe3be76c",
+              "name": "pessoa_documento_numero",
+              "value": "Defina o número de documento do cliente, cnpj ou cpf",
+              "type": "string"
+            },
+            {
+              "id": "2e52f155-6ba0-44b1-955b-76703a25b8a1",
+              "name": "pessoa_nacionalidade",
+              "value": "Defina a nacionalidade do cliente",
+              "type": "string"
+            },
+            {
+              "id": "71046622-c4dc-424c-bbd9-3e0adb962f07",
+              "name": "pessoa_estadocivil",
+              "value": "Defina o estado civil do cliente",
+              "type": "string"
+            },
+            {
+              "id": "dc038138-f0a3-44bc-96bd-831350a857b2",
+              "name": "pessoa_profissao",
+              "value": "Defina a profissão do cliente",
+              "type": "string"
+            },
+            {
+              "id": "b3d1b941-1272-4e87-b22b-7d0da01a2ab3",
+              "name": "endereco_logradouro",
+              "value": "Inicio do endereço, defina o logradouro do cliente",
+              "type": "string"
+            },
+            {
+              "id": "9572db2b-72b6-45a3-bd7f-b47aaaa80d48",
+              "name": "endereco_numero",
+              "value": "Número do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "4f378911-c94b-4103-9554-67527e836361",
+              "name": "endereco_complemento",
+              "value": "Complemento do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "e0a8d6c6-6ae8-443e-bc6d-265a96313bfd",
+              "name": "endereco_bairro",
+              "value": "Bairro do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "1eb2578a-69ae-4f31-9710-f72e892d662d",
+              "name": "endereco_cep",
+              "value": "Cep do endereço do cliente",
+              "type": "string"
+            },
+            {
+              "id": "79428dfb-f305-45fe-ae37-1517ca4b1d1e",
+              "name": "cooperativa_nome",
+              "value": "Defina o nome da cooperativa de crédito autora, analise o documento <dados portador>",
+              "type": "string"
+            },
+            {
+              "id": "9594f052-7e49-43af-a3a7-882dd4f25557",
+              "name": "divida_titulo",
+              "value": "Entenda o tipo da dívida firmada, defina nesse campo o título descritivo da dívida",
+              "type": "string"
+            },
+            {
+              "id": "c0ba51e4-5231-4be7-b9d9-1045297825ad",
+              "name": "divida_data_inicio",
+              "value": "Defina a data inicial que o cliente firmou a dívida. Formato: DD/MM/YYYY",
+              "type": "string"
+            },
+            {
+              "id": "20626081-50ca-4eef-877d-905b5fc9f01b",
+              "name": "bens_table_todos_dados",
+              "value": "Defina uma lista de Bens que a cliente deu em alienação, A lista deve ter todos os detalhes de cada bem.",
+              "type": "string"
+            },
+            {
+              "id": "5f74e493-5200-469b-8ef8-d0288ec3c705",
+              "name": "divida_valor",
+              "value": "Defina o valor total da dívida contraída no início do acordo. Formato: R$ x00.000,00",
+              "type": "string"
+            },
+            {
+              "id": "b945de64-819b-458a-aab8-a67528adf152",
+              "name": "divida_valor_escrito",
+              "value": "Defina o valor total da dívida contraída no início do acordo. escreva o valor por extenso",
+              "type": "string"
+            },
+            {
+              "id": "53aa5167-eea9-45b9-aea5-ada6b7f90549",
+              "name": "divida_parcelas",
+              "value": "Defina o número de parcelas que a dívida foi firmada",
+              "type": "string"
+            },
+            {
+              "id": "77792677-29aa-4c52-8321-856069d4e2ba",
+              "name": "divida_parcelas_escrito",
+              "value": "Defina o número de parcelas que a dívida foi firmada. escreva o número de parcelas por extenso",
+              "type": "string"
+            },
+            {
+              "id": "fc3d9d92-4a15-4189-8d70-bcdb334aa218",
+              "name": "divida_parcelas_descritivo",
+              "value": "Descreva de forma curta sobre a parcela. Exemplo: são prestações fixas, pagas mensalmente, consecultivas",
+              "type": "string"
+            },
+            {
+              "id": "c2b877dd-bbd8-4d9f-89eb-9c9f9902da37",
+              "name": "divida_parcela_valor",
+              "value": "Defina o valor de cada parcela. Formato: R$ x00.000,00",
+              "type": "string"
+            },
+            {
+              "id": "f80c452d-84b5-4c14-a46f-dd4c19c32c69",
+              "name": "divida_parcela_valor_escrito",
+              "value": "Defina o valor de cada parcela. escreva o valor por extenso",
+              "type": "string"
+            },
+            {
+              "id": "fb445a4b-f499-4b63-abb7-98cdde3f163e",
+              "name": "divida_parcela_data_inicio",
+              "value": "Defina a data da primeira parcela. Formato: DD/MM/YYYY",
+              "type": "string"
+            },
+            {
+              "id": "060296be-e278-4238-9d45-1ff816b9b252",
+              "name": "divida_parcela_data_final",
+              "value": "Defina a data da última parcela. Formato: DD/MM/YYYY",
+              "type": "string"
+            },
+            {
+              "id": "e2f8b372-9cc8-4fa2-bb39-27b941687e50",
+              "name": "doc_recive",
+              "value": "Defina o nome com que a cliente foi abordada para ser notificada que tornou-se inadimplente. Exemplo: Notificação Extrajudicial",
+              "type": "string"
+            },
+            {
+              "id": "1729c9d5-760e-475a-acc2-026f82d60f5b",
+              "name": "divida_valor_total_aberto",
+              "value": "Defina o valor total da dívida com o débito em aberto correspondendo ao saldo em aberto total, vencido e vincendo, acrescido dos encargos moratórios contratuais sobre o vencido. Formato: R$ x00.000,00",
+              "type": "string"
+            },
+            {
+              "id": "be05c860-2e4f-4a36-92e7-5a29c17571b0",
+              "name": "divida_valor_total_aberto_escrito",
+              "value": "Defina o valor total da dívida com o débito em aberto correspondendo ao saldo em aberto total, vencido e vincendo, acrescido dos encargos moratórios contratuais sobre o vencido. escreva o valor por extenso",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1584,
+        304
+      ],
+      "id": "a95fb4a6-a8ba-429f-9a0c-58c04fe27cea",
+      "name": "Set Variaveis7"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "7609c0ca-199b-4c74-8809-517ebc70bcf8",
+              "name": "data",
+              "value": "={{ $item(\"0\").$node[\"Aggregate1\"].json[\"data\"] }}",
+              "type": "array"
+            },
+            {
+              "id": "a1f4f610-1e7d-4cd9-831e-443fbaeaac44",
+              "name": "dados",
+              "value": "={{$json.removeField('data')}}",
+              "type": "object"
+            },
+            {
+              "id": "888c94d0-51f9-4410-b868-bc68cb9f518b",
+              "name": "input",
+              "value": "Analise os documentos em anexo, a análise anterior definiu como \"DOCUMENTO NÃO VÁLIDO PARA AÇÃO JUDICIAL\" Descreva em poucas linhas o motivo",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        224,
+        1824
+      ],
+      "id": "436a87a3-5f17-4921-a5b7-18f18ae4e281",
+      "name": "Edit Fields9"
+    },
+    {
+      "parameters": {
+        "resource": "folder",
+        "name": "=({{ $json.name }}) - Credivar",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "=1X6Fwm3gxVOQV8dVNCm9iJeoXixYDXI53",
+          "mode": "id"
+        },
+        "options": {
+          "folderColorRgb": "#FFE100"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1424,
+        784
+      ],
+      "id": "0fb379d0-9c38-4365-9b14-b46315865f7a",
+      "name": "Create folder",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "nbhJQnWQSF1lrPVZ",
+          "name": "Google Drive terceirizacao"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Pasta produção"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1504,
+        688
+      ],
+      "typeVersion": 1,
+      "id": "21d1b111-20e8-4163-8591-1463cec9ff9b",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {
+    "Veiculo?": [
+      {
+        "json": {
+          "have_vehicle": true
+        }
+      }
+    ],
+    "Edit Fields6": [
+      {
+        "json": {
+          "data": [
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/agn9k5oh4ofl",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/e44ykb08zxht",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/dig4njgpstaf",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/vp02502o1li7",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/s4xujkk9vtev",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/onem1ce4tu5y",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/uubei041j47j",
+              "mimeType": "application/pdf"
+            }
+          ]
+        }
+      }
+    ],
+    "Set Variaveis5": [
+      {
+        "json": {
+          "data": [
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/agn9k5oh4ofl",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/e44ykb08zxht",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/dig4njgpstaf",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/vp02502o1li7",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/s4xujkk9vtev",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/onem1ce4tu5y",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/uubei041j47j",
+              "mimeType": "application/pdf"
+            }
+          ],
+          "pessoa_nome_completo": "Nome completo do cliente que aparece na maioria dos documentos",
+          "cidade_estado": "nome da cidade e Sigla do Estado. Exemplo: Vitória/ES",
+          "pessoa_tipo_escrito": "Defina se cliente é \"Pessoa Jurídica\" ou \"Pessoa Física\"",
+          "pessoa_tipo_siglas": "Defina se cliente é \"CNPJ\" ou \"CPF\"",
+          "pessoa_documento_numero": "Defina o número de documento do cliente, cnpj ou cpf",
+          "pessoa_nacionalidade": "Defina a nacionalidade do cliente",
+          "pessoa_estadocivil": "Defina o estado civil do cliente",
+          "pessoa_profissao": "Defina a profissão do cliente",
+          "endereco_logradouro": "Inicio do endereço, defina o logradouro do cliente",
+          "endereco_numero": "Número do endereço do cliente",
+          "endereco_complemento": "Complemento do endereço do cliente",
+          "endereco_bairro": "Bairro do endereço do cliente",
+          "endereco_cep": "Cep do endereço do cliente",
+          "cooperativa_nome": "Defina o nome da cooperativa de crédito autora, analise o documento <dados portador>",
+          "divida_titulo": "Entenda o tipo da dívida firmada, defina nesse campo o título descritivo da dívida",
+          "divida_data_inicio": "Defina a data inicial que o cliente firmou a dívida. Formato: DD/MM/YYYY",
+          "bens_table_todos_dados": "Defina uma lista de Bens que a cliente deu em alienação, A lista deve ter todos os detalhes de cada bem.",
+          "divida_valor": "Defina o valor total da dívida contraída no início do acordo. Formato: R$ x00.000,00",
+          "divida_valor_escrito": "Defina o valor total da dívida contraída no início do acordo. escreva o valor por extenso",
+          "divida_parcelas": "Defina o número de parcelas que a dívida foi firmada",
+          "divida_parcelas_escrito": "Defina o número de parcelas que a dívida foi firmada. escreva o número de parcelas por extenso",
+          "divida_parcelas_descritivo": "Descreva de forma curta sobre a parcela. Exemplo: são prestações fixas, pagas mensalmente, consecultivas",
+          "divida_parcela_valor": "Defina o valor de cada parcela. Formato: R$ x00.000,00",
+          "divida_parcela_valor_escrito": "Defina o valor de cada parcela. escreva o valor por extenso",
+          "divida_parcela_data_inicio": "Defina a data da primeira parcela. Formato: DD/MM/YYYY",
+          "divida_parcela_data_final": "Defina a data da última parcela. Formato: DD/MM/YYYY",
+          "doc_recive": "Defina o nome com que a cliente foi abordada para ser notificada que tornou-se inadimplente. Exemplo: Notificação Extrajudicial",
+          "divida_valor_total_aberto": "Defina o valor total da dívida com o débito em aberto correspondendo ao saldo em aberto total, vencido e vincendo, acrescido dos encargos moratórios contratuais sobre o vencido. Formato: R$ x00.000,00",
+          "divida_valor_total_aberto_escrito": "Defina o valor total da dívida com o débito em aberto correspondendo ao saldo em aberto total, vencido e vincendo, acrescido dos encargos moratórios contratuais sobre o vencido. escreva o valor por extenso"
+        }
+      }
+    ],
+    "Set Variaveis6": [
+      {
+        "json": {
+          "data": [
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/agn9k5oh4ofl",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/e44ykb08zxht",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/dig4njgpstaf",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/vp02502o1li7",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/s4xujkk9vtev",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/onem1ce4tu5y",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/uubei041j47j",
+              "mimeType": "application/pdf"
+            }
+          ],
+          "avalista1_nome": "Defina o nome completo do primeiro Avalista do carro",
+          "avalista1_nacionalidade": "Defina nacionalidade do primeiro Avalista do carro",
+          "avalista1_estadocivil": "Defina estado civil do primeiro Avalista do carro",
+          "avalista1_documento_numero": "Defina número de documento do primeiro Avalista do carro",
+          "avalista1_endereco_completo": "Defina o endereço completo do primeiro Avalista do carro",
+          "avalista2_nome": "Defina o nome completo do segundo Avalista do carro",
+          "avalista2_nacionalidade": "Defina nacionalidade do segundo Avalista do carro",
+          "avalista2_estadocivil": "Defina estado civil do segundo Avalista do carro",
+          "avalista2_documento_numero": "Defina número de documento do segundo Avalista do carro"
+        }
+      }
+    ],
+    "Edit Fields7": [
+      {
+        "json": {
+          "data": [
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/agn9k5oh4ofl",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/e44ykb08zxht",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/dig4njgpstaf",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/vp02502o1li7",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/s4xujkk9vtev",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/onem1ce4tu5y",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/uubei041j47j",
+              "mimeType": "application/pdf"
+            }
+          ],
+          "dados": {
+            "avalista1_nome": "Defina o nome completo do primeiro Avalista do carro",
+            "avalista1_nacionalidade": "Defina nacionalidade do primeiro Avalista do carro",
+            "avalista1_estadocivil": "Defina estado civil do primeiro Avalista do carro",
+            "avalista1_documento_numero": "Defina número de documento do primeiro Avalista do carro",
+            "avalista1_endereco_completo": "Defina o endereço completo do primeiro Avalista do carro",
+            "avalista2_nome": "Defina o nome completo do segundo Avalista do carro",
+            "avalista2_nacionalidade": "Defina nacionalidade do segundo Avalista do carro",
+            "avalista2_estadocivil": "Defina estado civil do segundo Avalista do carro",
+            "avalista2_documento_numero": "Defina número de documento do segundo Avalista do carro"
+          },
+          "input": "Analise os documentos em anexo, analise a parte onde fala sobre o veículo e os avaliadores do veículo e extraia as informações solicitadas"
+        }
+      }
+    ],
+    "Dados necessarios2": [
+      {
+        "json": {
+          "avalista1_nome": "ARYANNA MARIA DO PRADO CARVALHO LIMA",
+          "avalista1_nacionalidade": "BRASILEIRO (A)",
+          "avalista1_estadocivil": "CASADO (A)",
+          "avalista1_documento_numero": "MG-16.624.544",
+          "avalista1_endereco_completo": "AVENIDA PADRE ANCHIETA - 194 - CARIOCA - CS - CAMBUQUIRA - MG - CEP: 37420000",
+          "avalista2_nome": "FELIPE CARVALHO LIMA",
+          "avalista2_nacionalidade": "BRASILEIRO (A)",
+          "avalista2_estadocivil": "CASADO (A)",
+          "avalista2_documento_numero": "04457403600"
+        }
+      }
+    ],
+    "Edit Fields5": [
+      {
+        "json": {
+          "data": [
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/agn9k5oh4ofl",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/e44ykb08zxht",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/dig4njgpstaf",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/vp02502o1li7",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/s4xujkk9vtev",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/onem1ce4tu5y",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/uubei041j47j",
+              "mimeType": "application/pdf"
+            }
+          ],
+          "dados": {
+            "pessoa_nome_completo": "Nome completo do cliente que aparece na maioria dos documentos",
+            "cidade_estado": "nome da cidade e Sigla do Estado. Exemplo: Vitória/ES",
+            "pessoa_tipo_escrito": "Defina se cliente é \"Pessoa Jurídica\" ou \"Pessoa Física\"",
+            "pessoa_tipo_siglas": "Defina se cliente é \"CNPJ\" ou \"CPF\"",
+            "pessoa_documento_numero": "Defina o número de documento do cliente, cnpj ou cpf",
+            "pessoa_nacionalidade": "Defina a nacionalidade do cliente",
+            "pessoa_estadocivil": "Defina o estado civil do cliente",
+            "pessoa_profissao": "Defina a profissão do cliente",
+            "endereco_logradouro": "Inicio do endereço, defina o logradouro do cliente",
+            "endereco_numero": "Número do endereço do cliente",
+            "endereco_complemento": "Complemento do endereço do cliente",
+            "endereco_bairro": "Bairro do endereço do cliente",
+            "endereco_cep": "Cep do endereço do cliente",
+            "cooperativa_nome": "Defina o nome da cooperativa de crédito autora, analise o documento <dados portador>",
+            "divida_titulo": "Entenda o tipo da dívida firmada, defina nesse campo o título descritivo da dívida",
+            "divida_data_inicio": "Defina a data inicial que o cliente firmou a dívida. Formato: DD/MM/YYYY",
+            "bens_table_todos_dados": "Defina uma lista de Bens que a cliente deu em alienação, A lista deve ter todos os detalhes de cada bem.",
+            "divida_valor": "Defina o valor total da dívida contraída no início do acordo. Formato: R$ x00.000,00",
+            "divida_valor_escrito": "Defina o valor total da dívida contraída no início do acordo. escreva o valor por extenso",
+            "divida_parcelas": "Defina o número de parcelas que a dívida foi firmada",
+            "divida_parcelas_escrito": "Defina o número de parcelas que a dívida foi firmada. escreva o número de parcelas por extenso",
+            "divida_parcelas_descritivo": "Descreva de forma curta sobre a parcela. Exemplo: são prestações fixas, pagas mensalmente, consecultivas",
+            "divida_parcela_valor": "Defina o valor de cada parcela. Formato: R$ x00.000,00",
+            "divida_parcela_valor_escrito": "Defina o valor de cada parcela. escreva o valor por extenso",
+            "divida_parcela_data_inicio": "Defina a data da primeira parcela. Formato: DD/MM/YYYY",
+            "divida_parcela_data_final": "Defina a data da última parcela. Formato: DD/MM/YYYY",
+            "doc_recive": "Defina o nome com que a cliente foi abordada para ser notificada que tornou-se inadimplente. Exemplo: Notificação Extrajudicial",
+            "divida_valor_total_aberto": "Defina o valor total da dívida com o débito em aberto correspondendo ao saldo em aberto total, vencido e vincendo, acrescido dos encargos moratórios contratuais sobre o vencido. Formato: R$ x00.000,00",
+            "divida_valor_total_aberto_escrito": "Defina o valor total da dívida com o débito em aberto correspondendo ao saldo em aberto total, vencido e vincendo, acrescido dos encargos moratórios contratuais sobre o vencido. escreva o valor por extenso"
+          }
+        }
+      }
+    ],
+    "Dados necessarios1": [
+      {
+        "json": {
+          "pessoa_nome_completo": "ARYANNA MARIA DO PRADO CARVALHO LIMA",
+          "cidade_estado": "Cambuquira/MG",
+          "pessoa_tipo_escrito": "Pessoa Jurídica",
+          "pessoa_tipo_siglas": "CNPJ",
+          "pessoa_documento_numero": "30.159.765/0001-30",
+          "pessoa_nacionalidade": "Brasileiro (a)",
+          "pessoa_estadocivil": "Casado (a)",
+          "pessoa_profissao": "Administrador",
+          "endereco_logradouro": "AVENIDA CAPITAO AURELIANO",
+          "endereco_numero": "128",
+          "endereco_complemento": "CENTRO",
+          "endereco_bairro": "CENTRO",
+          "endereco_cep": "37420000",
+          "cooperativa_nome": "COOPERATIVA DE CREDITO CREDIVAR LTDA. - SICOOB CREDIVAR",
+          "divida_titulo": "FINANCIAMENTO - VEÍCULOS USADOS",
+          "divida_data_inicio": "17/01/2023",
+          "bens_table_todos_dados": "JEEP COMPASS TRAILHAWK TD350 2.0 4X4 DIE. AUT, Renavam: 1286470843, Chassi: 988675118NKL19467, Ano/Modelo: 2021/2022, Placa: RTN8F54 - MG, COR BRANCA. Valor: R$ 219.864,00.",
+          "divida_valor": "R$ 210.860,91",
+          "divida_valor_escrito": "duzentos e dez mil e oitocentos e sessenta reais e noventa e um centavos",
+          "divida_parcelas": "48",
+          "divida_parcelas_escrito": "quarenta e oito",
+          "divida_parcelas_descritivo": "prestações fixas, pagas mensalmente",
+          "divida_parcela_valor": "R$ 6.834,67",
+          "divida_parcela_valor_escrito": "seis mil, oitocentos e trinta e quatro reais e sessenta e sete centavos",
+          "divida_parcela_data_inicio": "15/02/2023",
+          "divida_parcela_data_final": "28/12/2026",
+          "doc_recive": "Cédula de Crédito Bancário",
+          "divida_valor_total_aberto": "R$ 156.697,76",
+          "divida_valor_total_aberto_escrito": "cento e cinquenta e seis mil, seiscentos e noventa e sete reais e setenta e seis centavos"
+        }
+      }
+    ],
+    "Edit Fields8": [
+      {
+        "json": {
+          "pessoa_nome_completo": "ARYANNA MARIA DO PRADO CARVALHO LIMA",
+          "cidade_estado": "Cambuquira/MG",
+          "pessoa_tipo_escrito": "Pessoa Jurídica",
+          "pessoa_tipo_siglas": "CNPJ",
+          "pessoa_documento_numero": "30.159.765/0001-30",
+          "pessoa_nacionalidade": "Brasileiro (a)",
+          "pessoa_estadocivil": "Casado (a)",
+          "pessoa_profissao": "Administrador",
+          "endereco_logradouro": "AVENIDA CAPITAO AURELIANO",
+          "endereco_numero": "128",
+          "endereco_complemento": "CENTRO",
+          "endereco_bairro": "CENTRO",
+          "endereco_cep": "37420000",
+          "cooperativa_nome": "COOPERATIVA DE CREDITO CREDIVAR LTDA. - SICOOB CREDIVAR",
+          "divida_titulo": "FINANCIAMENTO - VEÍCULOS USADOS",
+          "divida_data_inicio": "17/01/2023",
+          "bens_table_todos_dados": "JEEP COMPASS TRAILHAWK TD350 2.0 4X4 DIE. AUT, Renavam: 1286470843, Chassi: 988675118NKL19467, Ano/Modelo: 2021/2022, Placa: RTN8F54 - MG, COR BRANCA. Valor: R$ 219.864,00.",
+          "divida_valor": "R$ 210.860,91",
+          "divida_valor_escrito": "duzentos e dez mil e oitocentos e sessenta reais e noventa e um centavos",
+          "divida_parcelas": "48",
+          "divida_parcelas_escrito": "quarenta e oito",
+          "divida_parcelas_descritivo": "prestações fixas, pagas mensalmente",
+          "divida_parcela_valor": "R$ 6.834,67",
+          "divida_parcela_valor_escrito": "seis mil, oitocentos e trinta e quatro reais e sessenta e sete centavos",
+          "divida_parcela_data_inicio": "15/02/2023",
+          "divida_parcela_data_final": "28/12/2026",
+          "doc_recive": "Cédula de Crédito Bancário",
+          "divida_valor_total_aberto": "R$ 156.697,76",
+          "divida_valor_total_aberto_escrito": "cento e cinquenta e seis mil, seiscentos e noventa e sete reais e setenta e seis centavos",
+          "data_hoje": "10 de dezembro de 2025"
+        }
+      }
+    ],
+    "Google Drive4": [
+      {
+        "json": {
+          "kind": "drive#file",
+          "id": "1ZlHuELwbo7yltWsCpIm5ujBsU9hZf_0A",
+          "name": "PETIÇÃO",
+          "mimeType": "application/vnd.google-apps.folder"
+        }
+      }
+    ],
+    "Dados necessarios3": [
+      {
+        "json": {
+          "motivo": "O documento de Ficha Cadastral, embora contenha dados pessoais e declarações, não possui a assinatura física do cliente nas seções designadas, tornando-o inválido para fins de ação judicial."
+        }
+      }
+    ],
+    "Dados necessarios4": [
+      {
+        "json": {
+          "pessoa_nome_completo": "TOME ANGELO DA SILVA NUNES",
+          "cidade_estado": "Varginha/MG",
+          "pessoa_tipo_escrito": "Pessoa Física",
+          "pessoa_tipo_siglas": "CPF",
+          "pessoa_documento_numero": "005.861.686-13",
+          "pessoa_nacionalidade": "BRASIL",
+          "pessoa_estadocivil": "CASADO(A)",
+          "pessoa_profissao": "PRODUTOR AGROPECUÁRIO, EM GERAL",
+          "endereco_logradouro": "RUA FRANCISCA DE OLIVEIRA RODRIGUES",
+          "endereco_numero": "130",
+          "endereco_complemento": "",
+          "endereco_bairro": "CONDOMÍNIO RESIDENCIAL URUPÊS",
+          "endereco_cep": "37062645",
+          "plataforma_nome": "SICOOB",
+          "contrato_numero": "18491603",
+          "contrato_valor": "R$ 10.357,04",
+          "contrato_valor_escrito": "dez mil trezentos e cinquenta e sete reais e quatro centavos",
+          "emprestimo_data_inicio": "10/05/2024",
+          "emprestimo_valor": "R$ 10.000,00",
+          "emprestimo_valor_escrito": "dez mil reais",
+          "parcelas_numero": "48",
+          "parcelas_numero_escrito": "quarenta e oito",
+          "parcela_valor": "R$ 443,04",
+          "parcela_valor_escrito": "quatrocentos e quarenta e três reais e quatro centavos",
+          "parcela_data_inicio": "02/09/2024",
+          "parcela_data_fim": "01/08/2028",
+          "inadimplencia_valor": "R$ 1.921,86",
+          "inadimplencia_valor_escrito": "mil novecentos e vinte e um reais e oitenta e seis centavos"
+        }
+      }
+    ],
+    "Dados necessarios5": [
+      {
+        "json": {
+          "pessoa_nome_completo": "PARAISO DOS TUCANOS HOSPEDAGEM E EVENTOS LTDA",
+          "cidade_estado": "Aiuruoca/MG",
+          "pessoa_tipo_escrito": "Pessoa Jurídica",
+          "pessoa_tipo_siglas": "CNPJ",
+          "pessoa_documento_numero": "36.992.008/0001-29",
+          "pessoa_nacionalidade": "Brasileira",
+          "pessoa_estadocivil": "Não se aplica",
+          "pessoa_profissao": "Não se aplica",
+          "endereco_logradouro": "ESTRADA PONTA ALTA",
+          "endereco_numero": "9999SI",
+          "endereco_complemento": "",
+          "endereco_bairro": "PONTA ALTA",
+          "endereco_cep": "37450000",
+          "credito_valor": "R$ 42.286,97",
+          "credito_valor_escrito": "quarenta e dois mil e duzentos e oitenta e seis reais e noventa e sete centavos",
+          "parcelas_numero": "36",
+          "parcelas_numero_escrito": "trinta e seis",
+          "parcela_valor": "R$ 1.990,58",
+          "parcela_valor_escrito": "mil novecentos e noventa reais e cinquenta e oito centavos",
+          "parcela_data_inicio": "14/07/2023",
+          "parcela_data_fim": "15/06/2026",
+          "inadimplencia_valor": "R$ 876,87",
+          "inadimplencia_valor_escrito": "oitocentos e setenta e seis reais e oitenta e sete centavos",
+          "caso_empresa_representante": "INGRID SCHWALM QUEDNAU, Brasileira, Solteiro(a), Administrador, inscrito no CPF número 412.397.500-30, residente e domiciliado na cidade de Aiuruoca/MG, SÍTIO HL99999 - S/N - AREA RURAL, CEP: 37450000",
+          "cedula_credito_numero": "1626557",
+          "cedula_credito_data": "16/06/2023"
+        }
+      }
+    ],
+    "Edit Fields20": [
+      {
+        "json": {
+          "data": [
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/agn9k5oh4ofl",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/e44ykb08zxht",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/dig4njgpstaf",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/vp02502o1li7",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/s4xujkk9vtev",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/onem1ce4tu5y",
+              "mimeType": "application/pdf"
+            },
+            {
+              "fileUri": "https://generativelanguage.googleapis.com/v1beta/files/uubei041j47j",
+              "mimeType": "application/pdf"
+            }
+          ],
+          "dados": {
+            "pessoa_nome_completo": "Nome completo do cliente que aparece na maioria dos documentos",
+            "cidade_estado": "nome da cidade e Sigla do Estado. Exemplo: Vitória/ES",
+            "pessoa_tipo_escrito": "Defina se cliente é \"Pessoa Jurídica\" ou \"Pessoa Física\"",
+            "pessoa_tipo_siglas": "Defina se cliente é \"CNPJ\" ou \"CPF\"",
+            "pessoa_documento_numero": "Defina o número de documento do cliente, cnpj ou cpf",
+            "pessoa_nacionalidade": "Defina a nacionalidade do cliente",
+            "pessoa_estadocivil": "Defina o estado civil do cliente",
+            "pessoa_profissao": "Defina a profissão do cliente",
+            "endereco_logradouro": "Inicio do endereço, defina o logradouro do cliente",
+            "endereco_numero": "Número do endereço do cliente",
+            "endereco_complemento": "Complemento do endereço do cliente",
+            "endereco_bairro": "Bairro do endereço do cliente",
+            "endereco_cep": "Cep do endereço do cliente",
+            "cooperativa_nome": "Defina o nome da cooperativa de crédito autora, analise o documento <dados portador>",
+            "divida_titulo": "Entenda o tipo da dívida firmada, defina nesse campo o título descritivo da dívida",
+            "divida_data_inicio": "Defina a data inicial que o cliente firmou a dívida. Formato: DD/MM/YYYY",
+            "bens_table_todos_dados": "Defina uma lista de Bens que a cliente deu em alienação, A lista deve ter todos os detalhes de cada bem.",
+            "divida_valor": "Defina o valor total da dívida contraída no início do acordo. Formato: R$ x00.000,00",
+            "divida_valor_escrito": "Defina o valor total da dívida contraída no início do acordo. escreva o valor por extenso",
+            "divida_parcelas": "Defina o número de parcelas que a dívida foi firmada",
+            "divida_parcelas_escrito": "Defina o número de parcelas que a dívida foi firmada. escreva o número de parcelas por extenso",
+            "divida_parcelas_descritivo": "Descreva de forma curta sobre a parcela. Exemplo: são prestações fixas, pagas mensalmente, consecultivas",
+            "divida_parcela_valor": "Defina o valor de cada parcela. Formato: R$ x00.000,00",
+            "divida_parcela_valor_escrito": "Defina o valor de cada parcela. escreva o valor por extenso",
+            "divida_parcela_data_inicio": "Defina a data da primeira parcela. Formato: DD/MM/YYYY",
+            "divida_parcela_data_final": "Defina a data da última parcela. Formato: DD/MM/YYYY",
+            "doc_recive": "Defina o nome com que a cliente foi abordada para ser notificada que tornou-se inadimplente. Exemplo: Notificação Extrajudicial",
+            "divida_valor_total_aberto": "Defina o valor total da dívida com o débito em aberto correspondendo ao saldo em aberto total, vencido e vincendo, acrescido dos encargos moratórios contratuais sobre o vencido. Formato: R$ x00.000,00",
+            "divida_valor_total_aberto_escrito": "Defina o valor total da dívida com o débito em aberto correspondendo ao saldo em aberto total, vencido e vincendo, acrescido dos encargos moratórios contratuais sobre o vencido. escreva o valor por extenso"
+          }
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Upload a file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Files to list": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload a file1": {
+      "main": [
+        [
+          {
+            "node": "Aggregate1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate1": {
+      "main": [
+        [
+          {
+            "node": "Capturar Nome completo Cliente",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capturar Nome completo Cliente": {
+      "main": [
+        [
+          {
+            "node": "Create folder1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create folder1": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Files to list1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Files to list1": {
+      "main": [
+        [
+          {
+            "node": "Upload file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload file1": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Set Variaveis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variaveis": {
+      "main": [
+        [
+          {
+            "node": "Avaliar tipo de petição",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Avaliar tipo de petição": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields14",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Set Variaveis5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields16",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields12",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Set Variaveis13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Dados necessarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados necessarios": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Google Drive1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Google Docs1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs1": {
+      "main": [
+        [
+          {
+            "node": "Google Drive2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive2": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Dados necessarios1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variaveis5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields6": {
+      "main": [
+        [
+          {
+            "node": "Veiculo?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Veiculo?": {
+      "main": [
+        [
+          {
+            "node": "tem veiculo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "tem veiculo": {
+      "main": [
+        [
+          {
+            "node": "Set Variaveis6",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variaveis6": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields7": {
+      "main": [
+        [
+          {
+            "node": "Dados necessarios2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados necessarios2": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields8": {
+      "main": [
+        [
+          {
+            "node": "Google Drive4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive3": {
+      "main": [
+        [
+          {
+            "node": "tem veiculo1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive4": {
+      "main": [
+        [
+          {
+            "node": "Google Drive3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive5": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados necessarios1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "tem veiculo1": {
+      "main": [
+        [
+          {
+            "node": "Com carro",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sem carro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Com carro": {
+      "main": [
+        [
+          {
+            "node": "Google Drive5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sem carro": {
+      "main": [
+        [
+          {
+            "node": "Google Drive5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados necessarios3": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados necessarios4": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields12": {
+      "main": [
+        [
+          {
+            "node": "Dados necessarios4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive6": {
+      "main": [
+        [
+          {
+            "node": "Google Docs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive7": {
+      "main": [
+        [
+          {
+            "node": "Google Drive6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive8": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields13": {
+      "main": [
+        [
+          {
+            "node": "Google Drive7",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "main": [
+        [
+          {
+            "node": "Google Drive8",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados necessarios5": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields15",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields14": {
+      "main": [
+        [
+          {
+            "node": "Dados necessarios5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields15": {
+      "main": [
+        [
+          {
+            "node": "Google Drive10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive9": {
+      "main": [
+        [
+          {
+            "node": "Google Docs2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive10": {
+      "main": [
+        [
+          {
+            "node": "Google Drive9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive11": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs2": {
+      "main": [
+        [
+          {
+            "node": "Google Drive11",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados necessarios6": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields17",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields16": {
+      "main": [
+        [
+          {
+            "node": "Dados necessarios6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields17": {
+      "main": [
+        [
+          {
+            "node": "Google Drive13",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive12": {
+      "main": [
+        [
+          {
+            "node": "Google Docs4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive13": {
+      "main": [
+        [
+          {
+            "node": "Google Drive12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive14": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs4": {
+      "main": [
+        [
+          {
+            "node": "Google Drive14",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Files to list",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Set Variaveis12": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variaveis10": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variaveis11": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields10",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variaveis13": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields9",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variaveis14": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields19",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Variaveis7": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields20",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields9": {
+      "main": [
+        [
+          {
+            "node": "Dados necessarios3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "executionTimeout": 3600
+  },
+  "versionId": "29cfe273-1e3d-42cb-9c96-e10d5adbc9c8",
+  "meta": {
+    "instanceId": "9b3979e934d8c2e4f26a16b526bc0cd2e88fabf16ebbc6d042f1bce2e6a24c94"
+  },
+  "id": "yxj08WGPBpOtIW94",
+  "tags": [
+    {
+      "updatedAt": "2025-12-12T19:51:36.482Z",
+      "createdAt": "2025-12-12T19:51:36.482Z",
+      "id": "mfvvm2Q0ZWiMS9pA",
+      "name": "Roschel e Prado"
+    }
+  ]
+}
