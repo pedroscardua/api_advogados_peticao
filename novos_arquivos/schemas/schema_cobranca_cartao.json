@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ação de Cobrança - Cartão de Crédito",
+  "description": "Variáveis para preenchimento do template de Ação de Cobrança por inadimplência de cartão de crédito. A LLM deve extrair estas informações dos dados do portador, faturas, extratos e demonstrativo de débito.",
+  "type": "object",
+  "required": [
+    "comarca",
+    "qualificacao_completa_reu",
+    "segmento_cartao",
+    "data_inicio_mora",
+    "valor_debito_extenso",
+    "documentos_comprobatorios_1",
+    "documentos_comprobatorios_2",
+    "valor_causa_extenso",
+    "data_assinatura"
+  ],
+  "properties": {
+    "comarca": {
+      "type": "string",
+      "description": "Cidade e estado da comarca onde o processo será distribuído. Formato: CIDADE/UF",
+      "example": "VARGINHA/MG"
+    },
+    "qualificacao_completa_reu": {
+      "type": "string",
+      "description": "Qualificação completa do réu incluindo nome, nacionalidade, estado civil, profissão, CPF (ou CNPJ se PJ) e endereço completo. Formato para PF: 'NOME COMPLETO, nacionalidade, estado_civil, profissão, inscrito(a) no CPF/MF sob o nº XXX.XXX.XXX-XX, residente e domiciliado(a) na cidade de CIDADE/UF, à ENDEREÇO, nº NUM, BAIRRO, CEP: XXXXX-XXX'. Formato para PJ: 'RAZÃO SOCIAL, pessoa jurídica inscrita no CNPJ/MF sob o nº XX.XXX.XXX/XXXX-XX, com sede em ENDEREÇO COMPLETO'",
+      "example": "JOÃO DA SILVA, brasileiro, solteiro, comerciante, inscrito no CPF/MF sob o nº 123.456.789-00, residente e domiciliado na cidade de Varginha/MG, à Rua das Flores, nº 100, Centro, CEP: 37000-000"
+    },
+    "segmento_cartao": {
+      "type": "string",
+      "description": "Segmento/bandeira do cartão de crédito conforme consta no arquivo 'DADOS DO PORTADOR'. Em MAIÚSCULAS.",
+      "example": "SICOOBCARD MASTERCARD EMPRESARIAL PRO"
+    },
+    "data_inicio_mora": {
+      "type": "string",
+      "description": "Data a partir da qual o réu está em mora (inadimplente), conforme demonstrativo de débito. Formato: DD/MM/AAAA ou mês/ano por extenso.",
+      "example": "15/03/2024"
+    },
+    "valor_debito_extenso": {
+      "type": "string",
+      "description": "Valor total do débito do cartão de crédito com R$ e extenso entre parênteses. Formato: 'R$ XX.XXX,XX (valor por extenso)'",
+      "example": "R$ 5.430,00 (cinco mil quatrocentos e trinta reais)"
+    },
+    "documentos_comprobatorios_1": {
+      "type": "string",
+      "description": "Descrição dos documentos comprobatórios principais anexados à petição. Descrever o tipo de documentos que acompanham a planilha de débito.",
+      "example": "carreada juntamente com as faturas do cartão de crédito"
+    },
+    "documentos_comprobatorios_2": {
+      "type": "string",
+      "description": "Documentos complementares anexados (se houver). Se não houver documentos adicionais: deixar vazio.",
+      "example": "e extratos",
+      "conditional": true
+    },
+    "valor_causa_extenso": {
+      "type": "string",
+      "description": "Valor atribuído à causa com R$ e extenso. Formato: 'R$ XX.XXX,XX (valor por extenso)'",
+      "example": "R$ 5.430,00 (cinco mil quatrocentos e trinta reais)"
+    },
+    "data_assinatura": {
+      "type": "string",
+      "description": "Data de elaboração da petição por extenso. Formato: 'D de mês de AAAA'",
+      "example": "15 de março de 2025"
+    }
+  }
+}

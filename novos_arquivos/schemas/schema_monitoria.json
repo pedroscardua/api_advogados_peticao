@@ -1,0 +1,180 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ação Monitória - Confissão de Dívida sem Assinatura de Testemunhas",
+  "description": "Variáveis para preenchimento do template de Ação Monitória baseada em Confissão de Dívida sem eficácia de título executivo (sem assinatura de testemunhas). A LLM deve extrair estas informações do instrumento de confissão de dívida, dados dos réus e demonstrativo de débito.",
+  "type": "object",
+  "required": [
+    "comarca",
+    "nome_reu_1",
+    "qualificacao_reu_1",
+    "nome_reu_2",
+    "qualificacao_reu_2",
+    "referencia_reu_unidade",
+    "agencia_numero",
+    "cidade_agencia",
+    "data_pactuacao",
+    "nome_instrumento",
+    "numero_contrato",
+    "valor_contrato",
+    "quantidade_parcelas",
+    "valor_parcela",
+    "regra_vencimento",
+    "termo_devedor",
+    "texto_clausula_vencimento",
+    "valor_atualizado",
+    "termo_chamada_devedor",
+    "resumo_contrato",
+    "reu_singular",
+    "pelo_a_reu",
+    "dos_das_reus",
+    "valor_atualizado_pedidos",
+    "texto_audiencia_virtual",
+    "pedido_prazo_custas",
+    "valor_causa",
+    "local_e_data"
+  ],
+  "properties": {
+    "comarca": {
+      "type": "string",
+      "description": "Cidade e estado da comarca onde o processo será distribuído. Formato: CIDADE/UF",
+      "example": "TRÊS CORAÇÕES/MG"
+    },
+    "nome_reu_1": {
+      "type": "string",
+      "description": "Nome completo do primeiro réu (devedor principal).",
+      "example": "ALEXON CLAUDINO"
+    },
+    "qualificacao_reu_1": {
+      "type": "string",
+      "description": "Qualificação completa do 1º réu: nacionalidade, estado civil, profissão (se houver), CPF e endereço. Deve começar com vírgula e espaço, e terminar com ' e ' (conjunção para ligar ao 2º réu). Formato: ', brasileiro(a), casado(a), regularmente inscrito(a) no CPF/MF sob nº XXX.XXX.XXX-XX, residente domiciliado(a) na cidade de CIDADE/UF à ENDEREÇO, nº NUM, Bairro BAIRRO, CEP: XXXXX-XXX e '",
+      "example": ", brasileiro, casado, regularmente inscrito no CPF/MF sob nº 214.119.608-66, residente domiciliado na cidade de Três Corações/MG à Dom Augusto, nº 556, Bairro Jardim Eldorado, CEP: 37410-710 e "
+    },
+    "nome_reu_2": {
+      "type": "string",
+      "description": "Nome completo do segundo réu (avalista/codevedor). Se não houver segundo réu: deixar vazio.",
+      "example": "JOÃO GUILHERME GUIDI",
+      "conditional": true
+    },
+    "qualificacao_reu_2": {
+      "type": "string",
+      "description": "Qualificação completa do 2º réu: nacionalidade, estado civil, profissão, CPF e endereço. Deve começar com vírgula e espaço. Formato: ', brasileiro(a), solteiro(a), PROFISSÃO, regularmente inscrito(a) no CPF/MF sob o nº XXX.XXX.XXX-XX, residente e domiciliado(a) na cidade de CIDADE/UF à ENDEREÇO, nº NUM, Bairro BAIRRO, CEP: XXXXX-XXX'. Se não houver: deixar vazio.",
+      "example": ", brasileiro, solteiro, administrador, regularmente inscrito no CPF/MF sob o nº 108.963.626-12, residente e domiciliado na cidade de Três Corações/MG à Rua das Papoulas, nº 63, Bairro Jardim Orion, CEP: 37410-508",
+      "conditional": true
+    },
+    "referencia_reu_unidade": {
+      "type": "string",
+      "description": "Forma de referência ao réu principal no contexto da relação com a agência. Use o gênero correto: 'O 1º Réu', 'A 1ª Ré', 'O Réu', 'A Ré'.",
+      "example": "O 1º Réu"
+    },
+    "agencia_numero": {
+      "type": "string",
+      "description": "Número da agência bancária/cooperativa onde o réu é cliente.",
+      "example": "3180"
+    },
+    "cidade_agencia": {
+      "type": "string",
+      "description": "Cidade onde se localiza a agência, precedida de espaço. Formato: ' CIDADE/UF'",
+      "example": " Varginha/MG"
+    },
+    "data_pactuacao": {
+      "type": "string",
+      "description": "Data em que o instrumento de confissão de dívida foi firmado. Formato: DD/MM/AAAA",
+      "example": "18/09/2020"
+    },
+    "nome_instrumento": {
+      "type": "string",
+      "description": "Nome completo do instrumento contratual conforme consta no documento.",
+      "example": "Instrumento Particular de Confissão de Dívida e Outras Avenças"
+    },
+    "numero_contrato": {
+      "type": "string",
+      "description": "Número de identificação do contrato/instrumento.",
+      "example": "1226944"
+    },
+    "valor_contrato": {
+      "type": "string",
+      "description": "Valor do contrato com R$ e extenso entre parênteses. Formato: 'R$ XX.XXX,XX (valor por extenso)'",
+      "example": "R$ 37.049,10 (Trinta e sete mil e quarenta e nove reais e dez centavos)"
+    },
+    "quantidade_parcelas": {
+      "type": "string",
+      "description": "Quantidade de parcelas com número por extenso entre parênteses. Formato: 'NN (número por extenso)'",
+      "example": "48 (quarenta e oito)"
+    },
+    "valor_parcela": {
+      "type": "string",
+      "description": "Valor de cada parcela com R$ e extenso. Formato: 'R$ X.XXX,XX (valor por extenso)'",
+      "example": "R$ 1.023,05 (um mil e vinte três reais e cinco centavos)"
+    },
+    "regra_vencimento": {
+      "type": "string",
+      "description": "Regra de vencimento das parcelas: data da primeira e regra para as demais.",
+      "example": "sendo a primeira com vencimento para 26/10/2020 e as demais em igual dia dos meses subsequentes."
+    },
+    "termo_devedor": {
+      "type": "string",
+      "description": "Termo usado para referir-se ao devedor após 'da parte'. Use gênero correto: 'Ré' (feminino) ou 'Réu' (masculino).",
+      "example": "Réu"
+    },
+    "texto_clausula_vencimento": {
+      "type": "string",
+      "description": "Texto descrevendo a obrigação de pagamento e cláusula de vencimento antecipado, conforme o contrato.",
+      "example": "o valor atualizado da dívida, considerando seu vencimento antecipado, conforme clausula 11 do contrato"
+    },
+    "valor_atualizado": {
+      "type": "string",
+      "description": "Valor total atualizado da dívida na data da petição, com R$ e extenso. Formato: 'R$ XX.XXX,XX (valor por extenso)'",
+      "example": "R$ 43.090,60 (Quarenta e três mil e noventa reais e sessenta centavos)"
+    },
+    "termo_chamada_devedor": {
+      "type": "string",
+      "description": "Artigo + termo devedor para uso como objeto direto. Formato: 'a Ré' ou 'o Réu'.",
+      "example": "o Réu"
+    },
+    "resumo_contrato": {
+      "type": "string",
+      "description": "Resumo completo do contrato para a seção 'DO DIREITO': tipo de instrumento, número, valor, parcelas, regra de vencimento e referência ao documento anexo. Deve ser um texto contínuo terminando com ponto final.",
+      "example": "Instrumento Particular de Confissão de Dívida e Outras Avenças (doc.j.) nº 1226944, no valor de R$ 37.049,10 (Trinta e sete mil e quarenta e nove reais e dez centavos), para pagamento em 48 (quarenta e oito) parcelas mensais e consecutivas no valor de R$ 1.023,05 (um mil e vinte três reais e cinco centavos), sendo a primeira com vencimento para 26/10/2020 e as demais em igual dia dos meses subsequentes (documento anexo)."
+    },
+    "reu_singular": {
+      "type": "string",
+      "description": "Forma singular do termo réu no gênero correto, para uso após 'a parte'. Valores possíveis: 'Ré' ou 'Réu'.",
+      "example": "Réu"
+    },
+    "pelo_a_reu": {
+      "type": "string",
+      "description": "Preposição 'por' contraída com artigo + réu no gênero correto. Valores possíveis: 'pelo Réu' ou 'pela Ré'.",
+      "example": "pelo Réu"
+    },
+    "dos_das_reus": {
+      "type": "string",
+      "description": "Preposição 'de' contraída com artigo + réus no gênero correto. Valores possíveis: 'dos Réus' ou 'das Rés'.",
+      "example": "dos Réus"
+    },
+    "valor_atualizado_pedidos": {
+      "type": "string",
+      "description": "Valor atualizado para a seção de pedidos, com R$ e extenso, seguido de vírgula. Formato: 'R$ XX.XXX,XX (valor por extenso),'",
+      "example": "R$ 43.090,60 (Quarenta e três mil e noventa reais e sessenta centavos),"
+    },
+    "texto_audiencia_virtual": {
+      "type": "string",
+      "description": "Trecho sobre preferência de audiência. Exemplo: 'que seja designada audiência de conciliação na forma VIRTUAL;' ou 'que seja designada audiência de conciliação a ser realizada pelo sistema VIDEOCONFERÊNCIA;'",
+      "example": "que seja designada audiência de conciliação na forma VIRTUAL;"
+    },
+    "pedido_prazo_custas": {
+      "type": "string",
+      "description": "Parágrafo completo do pedido de prazo para custas. Se aplicável: 'Por fim, REQUER desde já, o prazo de 15 (quinze) dias nos termos do artigo 290, CPC, para juntada do comprovante de recolhimento das custas e despesas iniciais.' Se não: deixar vazio.",
+      "conditional": true
+    },
+    "valor_causa": {
+      "type": "string",
+      "description": "Parágrafo completo do valor da causa. Formato: 'Dá-se à causa o valor de R$ XX.XXX,XX.'",
+      "example": "Dá-se à causa o valor de R$ 43.090,60."
+    },
+    "local_e_data": {
+      "type": "string",
+      "description": "Local e data por extenso. Formato: 'Cidade, DD de mês de AAAA.'",
+      "example": "Varginha, 03 de novembro de 2021."
+    }
+  }
+}

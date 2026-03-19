@@ -1,0 +1,147 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Execução de Título Extrajudicial - Cédula de Produto Rural com Garantidor",
+  "description": "Variáveis para preenchimento do template de Ação de Execução de Cédula de Produto Rural com garantidor hipotecante. A LLM deve extrair estas informações da cédula de produto rural, documentos do garantidor e planilha de débito.",
+  "type": "object",
+  "required": [
+    "comarca",
+    "nome_devedor_principal",
+    "qualificacao_devedor_principal",
+    "nome_garantidor",
+    "qualificacao_garantidor",
+    "qualidade_garantidor",
+    "tipo_titulo",
+    "texto_garantia_tipo",
+    "cabecalho_titulo_execucao",
+    "texto_garantia_hipotecaria",
+    "data_vencimento_cedula",
+    "valor_original_cedula",
+    "valor_execucao",
+    "valor_citacao",
+    "texto_limite_garantidor_citacao",
+    "texto_limite_valor_garantia",
+    "texto_limite_garantidor_penhora",
+    "texto_indicacao_penhora_tipo",
+    "grau_garantia",
+    "descricao_bem_garantia",
+    "valor_causa",
+    "data_documento"
+  ],
+  "properties": {
+    "comarca": {
+      "type": "string",
+      "description": "Cidade e estado da comarca onde o processo será distribuído. Formato: CIDADE/UF",
+      "example": "MACHADO/MG"
+    },
+    "nome_devedor_principal": {
+      "type": "string",
+      "description": "Nome completo do devedor principal (1º executado — pessoa física que emitiu a cédula de produto rural).",
+      "example": "FABIO CAIXETA MARCOVIG"
+    },
+    "qualificacao_devedor_principal": {
+      "type": "string",
+      "description": "Qualificação completa do devedor principal: nacionalidade, estado civil, profissão, CPF e endereço completo. Deve começar com vírgula e espaço, e terminar com ' e'. Formato: ', brasileiro(a), casado(a), PROFISSÃO, inscrito(a) no CPF/MF sob o n° XXX.XXX.XXX-XX, residente e domiciliado(a) na cidade de CIDADE/UF, à ENDEREÇO, nº NUM, Bairro BAIRRO, CEP: XXXXX-XXX e'",
+      "example": ", brasileiro(a), casado(a), produtor agropecuário, inscrito(a) no CPF/MF sob o n° 487.987.386-15, residente e domiciliado(a) na cidade de Machado/MG, à Rua Coronel Jacinto, nº 222, Bairro Centro, CEP: 37750-000 e"
+    },
+    "nome_garantidor": {
+      "type": "string",
+      "description": "Nome completo do garantidor hipotecante (2º executado — pessoa que deu o imóvel em garantia). Se não houver garantidor: deixar vazio.",
+      "example": "ISALTINA VERA DIAS MARCOVIG"
+    },
+    "qualificacao_garantidor": {
+      "type": "string",
+      "description": "Qualificação completa do garantidor: nacionalidade, estado civil, CPF e endereço completo. Deve começar com vírgula. Formato: ', brasileiro(a), casado(a), inscrito(a) no CPF/MF sob o nº XXX.XXX.XXX-XX, residente e domiciliado(a) na cidade de CIDADE/UF, ENDEREÇO COMPLETO, CEP: XXXXX-XXX'",
+      "example": ", brasileiro(a), casado(a), inscrito(a) no CPF/MF sob o nº 589.325.266-72, residente e domiciliado(a) na cidade de Machado/MG, no lugar denominado Sitio Cachoeira do Aca, nº 300, Bairro Trezentos, CEP: 37750-000"
+    },
+    "qualidade_garantidor": {
+      "type": "string",
+      "description": "Qualidade jurídica do garantidor em MAIÚSCULAS. Deve refletir o gênero do garantidor e o tipo de garantia.",
+      "example": "NA QUALIDADE DE GARANTIDORA HIPOTECANTE"
+    },
+    "tipo_titulo": {
+      "type": "string",
+      "description": "Tipo do título executivo extrajudicial, conforme consta no documento.",
+      "example": "Cédula de Produto Rural"
+    },
+    "texto_garantia_tipo": {
+      "type": "string",
+      "description": "Trecho que descreve o tipo de garantia. Se garantia hipotecária: 'garantida de forma hipotecária pelo(a) segundo(a) executado(a'. Se avalista: adaptar conforme o caso. Se sem garantidor: deixar vazio.",
+      "example": "garantida de forma hipotecária pelo(a) segundo(a) executado(a",
+      "conditional": true
+    },
+    "cabecalho_titulo_execucao": {
+      "type": "string",
+      "description": "Identificação completa do título incluindo tipo, número e data de emissão, seguido de 'pelo(a) executado(a) '. Formato: 'TIPO n° NÚMERO, emitida em DD/MM/AAAA, pelo(a) executado(a) '",
+      "example": "Cédula de Produto Rural n° 1578164, emitida em 01/03/2023, pelo(a) executado(a) "
+    },
+    "texto_garantia_hipotecaria": {
+      "type": "string",
+      "description": "Trecho condicional sobre garantia hipotecária. Se houver garantidor: 'com garantia hipotecária de '. Se não houver: deixar vazio.",
+      "example": "com garantia hipotecária de ",
+      "conditional": true
+    },
+    "data_vencimento_cedula": {
+      "type": "string",
+      "description": "Data de vencimento da cédula. Formato: DD/MM/AAAA",
+      "example": "20/02/2025"
+    },
+    "valor_original_cedula": {
+      "type": "string",
+      "description": "Valor original da cédula com R$ e extenso entre parênteses. Formato: 'R$ XXX.XXX,XX (valor por extenso)'",
+      "example": "R$ 100.630,65 (cem mil, seiscentos e trinta reis, sessenta e cinco centavos)"
+    },
+    "valor_execucao": {
+      "type": "string",
+      "description": "Valor total do saldo devedor atualizado até a data da petição (da planilha de débito), com R$ e extenso. Formato: 'R$ XXX.XXX,XX (valor por extenso)'",
+      "example": "R$ 130.708,39 (cento e trinta mil, setecentos e oito reais, trinta e nove centavos)"
+    },
+    "valor_citacao": {
+      "type": "string",
+      "description": "Valor para citação do devedor (geralmente igual ao valor_execucao), com R$ e extenso. Formato: 'R$ XXX.XXX,XX (valor por extenso)'",
+      "example": "R$ 130.708,39 (cento e trinta mil, setecentos e oito reais, trinta e nove centavos)"
+    },
+    "texto_limite_garantidor_citacao": {
+      "type": "string",
+      "description": "Trecho sobre responsabilidade limitada do garantidor na citação. Se houver garantidor hipotecante: 'sendo certo que o(a) executado(a) '. Se não houver: deixar vazio.",
+      "example": "sendo certo que o(a) executado(a) ",
+      "conditional": true
+    },
+    "texto_limite_valor_garantia": {
+      "type": "string",
+      "description": "Trecho sobre o limite de responsabilidade do garantidor. Se houver garantidor real: ' responderá até o limite do valor da avaliação do bem dado em garantia'. Se não houver: deixar vazio.",
+      "example": " responderá até o limite do valor da avaliação do bem dado em garantia",
+      "conditional": true
+    },
+    "texto_limite_garantidor_penhora": {
+      "type": "string",
+      "description": "Trecho que identifica o garantidor na cláusula de penhora. Se houver garantidor: 'o(a) executado(a) '. Se não houver: deixar vazio.",
+      "example": "o(a) executado(a) ",
+      "conditional": true
+    },
+    "texto_indicacao_penhora_tipo": {
+      "type": "string",
+      "description": "Texto completo sobre o tipo de garantia real indicada à penhora. Formato: 'O Exequente indica para penhora, neste ato, o seguinte bem dado em garantia contratual – TIPO_GARANTIA EM '",
+      "example": "O Exequente indica para penhora, neste ato, o seguinte bem dado em garantia contratual – HIPOTECA EM "
+    },
+    "grau_garantia": {
+      "type": "string",
+      "description": "Grau da garantia real em MAIÚSCULAS seguido de dois pontos.",
+      "example": "1º GRAU:"
+    },
+    "descricao_bem_garantia": {
+      "type": "string",
+      "description": "Descrição completa do imóvel dado em garantia, incluindo localização, área, matrícula, livro e cartório de registro. Formato: 'c.1 – DESCRIÇÃO COMPLETA DO IMÓVEL.'",
+      "example": "c.1 – Uma parte de terras situada no município de Machado/MG, no lugar denominado Fazenda Santa Maria ou Cachoeira do ACÁ, possuindo uma área de 09,68,00 HÁ, devidamente registrada sob a matricula de nº 10.712, livro 02, no Ofício de Registro de Imóveis da comarca de Machado/MG."
+    },
+    "valor_causa": {
+      "type": "string",
+      "description": "Valor atribuído à causa com R$ e extenso, seguido de ponto final. Formato: 'R$ XXX.XXX,XX (valor por extenso).'",
+      "example": "R$ 130.708,39 (cento e trinta mil, setecentos e oito reais, trinta e nove centavos)."
+    },
+    "data_documento": {
+      "type": "string",
+      "description": "Data de elaboração da petição por extenso. Formato: 'D de mês de AAAA'",
+      "example": "27 de janeiro de 2026"
+    }
+  }
+}

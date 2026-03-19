@@ -1,0 +1,106 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Ação de Cobrança - Contrato Eletrônico (App ou Caixa Eletrônico)",
+  "description": "Variáveis para preenchimento do template de Ação de Cobrança por inadimplência de empréstimo contratado por canal eletrônico (aplicativo ou caixa eletrônico). A LLM deve extrair estas informações do contrato eletrônico, extrato bancário e demonstrativo de débito.",
+  "type": "object",
+  "required": [
+    "comarca",
+    "nome_reu",
+    "qualificacao_reu",
+    "data_contrato",
+    "plataforma_contratacao",
+    "detalhes_contrato_valor",
+    "valor_total_emprestimo",
+    "quantidade_parcelas",
+    "valor_parcela",
+    "datas_pagamento_inicio_fim",
+    "tipo_contrato_eletronico",
+    "valor_debito_total",
+    "valor_condenacao",
+    "pedido_prazo_custas",
+    "valor_causa",
+    "data_documento"
+  ],
+  "properties": {
+    "comarca": {
+      "type": "string",
+      "description": "Cidade e estado da comarca onde o processo será distribuído. Formato: CIDADE/UF",
+      "example": "VARGINHA/MG"
+    },
+    "nome_reu": {
+      "type": "string",
+      "description": "Nome completo do réu (devedor do empréstimo eletrônico).",
+      "example": "TARLEY CARVALHO JUNQUEIRA"
+    },
+    "qualificacao_reu": {
+      "type": "string",
+      "description": "Qualificação completa do réu: nacionalidade, estado civil, profissão, CPF e endereço. Deve começar com espaço. Formato: ' brasileiro(a), solteiro(a), PROFISSÃO, inscrito(a) no CPF/MF sob nº XXX.XXX.XXX-XX, residente e domiciliado(a) na cidade de CIDADE/UF, à ENDEREÇO, nº NUM, Bairro BAIRRO, CEP: XXXXX-XXX'",
+      "example": " brasileiro(a), solteiro(a), trabalhador agropecuário em geral, inscrito(a) no CPF/MF sob nº 062.771.756-02, residente e domiciliado(a) na cidade Conceição do Rio Verde/MG, à Rua Joaquim Dias de Castro, nº 40, Bairro Centro, CEP: 37430-000"
+    },
+    "data_contrato": {
+      "type": "string",
+      "description": "Data em que o empréstimo foi contratado. Formato: DD/MM/AAAA",
+      "example": "04/11/2019"
+    },
+    "plataforma_contratacao": {
+      "type": "string",
+      "description": "Nome da plataforma eletrônica onde o empréstimo foi contratado, seguido de vírgula.",
+      "example": "SICOOBNET WAP EMPRESARIAL / CELULAR,"
+    },
+    "detalhes_contrato_valor": {
+      "type": "string",
+      "description": "Número do contrato e valor contratado com R$ e extenso, seguido de vírgula. Formato: 'NÚMERO no valor de R$ XX.XXX,XX (valor por extenso),'",
+      "example": "1056090 no valor de R$ 10.336,98 (dez mil, trezentos e trinta e seis reais e noventa e oito centavos),"
+    },
+    "valor_total_emprestimo": {
+      "type": "string",
+      "description": "Valor líquido do empréstimo creditado ao réu (sem 'R$' no início pois já consta no template), com extenso. Formato: 'XX.XXX,XX (valor por extenso)'",
+      "example": "10.000,00 (dez mil reais)"
+    },
+    "quantidade_parcelas": {
+      "type": "string",
+      "description": "Quantidade de parcelas com número por extenso entre parênteses. Formato: 'NN (número por extenso)'",
+      "example": "36 (trinta e seis)"
+    },
+    "valor_parcela": {
+      "type": "string",
+      "description": "Valor de cada parcela (sem 'R$' pois já consta no template), com extenso, seguido de vírgula. Formato: 'XXX,XX (valor por extenso),'",
+      "example": "561,42 (quinhentos e sessenta e um reais e quarenta e dois centavos),"
+    },
+    "datas_pagamento_inicio_fim": {
+      "type": "string",
+      "description": "Datas de início e término dos pagamentos, seguido de ponto. Formato: 'DD/MM/AAAA com término previsto para DD/MM/AAAA.'",
+      "example": "02/01/2020 com término previsto para 02/12/2022."
+    },
+    "tipo_contrato_eletronico": {
+      "type": "string",
+      "description": "Tipo/natureza do contrato eletrônico, em minúsculas.",
+      "example": "contrato eletrônico de empréstimo"
+    },
+    "valor_debito_total": {
+      "type": "string",
+      "description": "Valor total do débito atualizado (sem 'R$' pois já consta no template), com extenso. Formato: 'XX.XXX,XX (valor por extenso)'",
+      "example": "8.433,92 (oito mil, quatrocentos e quarenta e três reais e noventa e dois centavos)"
+    },
+    "valor_condenacao": {
+      "type": "string",
+      "description": "Valor da condenação pleiteada (sem 'R$' pois já consta no template), com extenso e vírgula final. Formato: 'XX.XXX,XX (valor por extenso),'",
+      "example": "8.433,92 (oito mil, quatrocentos e quarenta e três reais e noventa e dois centavos),"
+    },
+    "pedido_prazo_custas": {
+      "type": "string",
+      "description": "Texto do pedido de prazo para custas. Se aplicável: 'Por fim, REQUER desde já, o prazo de 15 (quinze) dias nos termos do artigo 290, CPC, para juntada do comprovante de recolhimento das custas e despesas iniciais.' Se custas já recolhidas: deixar vazio.",
+      "conditional": true
+    },
+    "valor_causa": {
+      "type": "string",
+      "description": "Valor atribuído à causa (sem 'R$' pois já consta no template), com extenso. Formato: 'XX.XXX,XX (valor por extenso)'",
+      "example": "8.433,92 (oito mil, quatrocentos e quarenta e três reais e noventa e dois centavos)"
+    },
+    "data_documento": {
+      "type": "string",
+      "description": "Data de elaboração da petição por extenso. Formato: 'D de mês de AAAA'",
+      "example": "4 de dezembro de 2025"
+    }
+  }
+}

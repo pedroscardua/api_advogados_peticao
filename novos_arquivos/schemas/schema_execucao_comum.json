@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Execução Comum - Cédula de Crédito Bancário",
+  "description": "Variáveis para preenchimento do template de Ação de Execução de Título Extrajudicial (Cédula de Crédito Bancário - execução comum). A LLM deve extrair estas informações da cédula de crédito, documentos societários, dados do sócio e planilha de débito.",
+  "type": "object",
+  "required": [
+    "comarca",
+    "nome_empresa_executada",
+    "qualificacao_empresa_executada",
+    "nome_socio_executado",
+    "qualificacao_socio_executado",
+    "numero_cedula",
+    "data_emissao_cedula",
+    "valor_contratado",
+    "quantidade_parcelas",
+    "data_inicio_pagamentos",
+    "data_termino_pagamentos",
+    "texto_amortizacao_cotas",
+    "valor_execucao",
+    "valor_citacao",
+    "valor_causa",
+    "data_documento"
+  ],
+  "properties": {
+    "comarca": {
+      "type": "string",
+      "description": "Cidade e estado da comarca onde o processo será distribuído. Formato: CIDADE/UF",
+      "example": "VARGINHA/MG"
+    },
+    "nome_empresa_executada": {
+      "type": "string",
+      "description": "Razão social completa da empresa executada (devedora), conforme consta no contrato ou documentos societários.",
+      "example": "LECI RIBEIRO DE PAIVA 86002929649"
+    },
+    "qualificacao_empresa_executada": {
+      "type": "string",
+      "description": "Qualificação jurídica completa da empresa executada incluindo natureza jurídica, CNPJ e endereço completo com CEP. Deve começar com vírgula e espaço. Formato: ', pessoa jurídica de direito privado, inscrita no CNPJ/MF sob nº XX.XXX.XXX/XXXX-XX, com sede na cidade de CIDADE/UF, à Rua LOGRADOURO, nº NUM, Bairro BAIRRO, CEP: XX.XXX-XXX'",
+      "example": ", pessoa jurídica de direito privado, inscrita no CNPJ/MF sob nº 14.491.881/0001-03, com sede na cidade de Lambari/MG, à Rua Ronnaldo Raimundi, nº 49, Bairro Novo Horizonte, CEP: 37.480-000"
+    },
+    "nome_socio_executado": {
+      "type": "string",
+      "description": "Nome completo do sócio pessoa física que também é executado na ação.",
+      "example": "LECI RIBEIRO DE PAIVA"
+    },
+    "qualificacao_socio_executado": {
+      "type": "string",
+      "description": "Qualificação completa do sócio executado incluindo nacionalidade, estado civil, profissão, CPF e endereço completo. Deve começar com vírgula e espaço. Formato: ', brasileiro(a), casado(a), PROFISSÃO, inscrito(a) no CPF/MF sob o nº XXX.XXX.XXX-XX, residente e domiciliado(a) na cidade de CIDADE/UF, à ENDEREÇO, nº NUM, Bairro BAIRRO, CEP: XX.XXX-XXX'",
+      "example": ", brasileiro(a), casado(a), administrador(a), inscrito(a) no CPF/MF sob o nº 860.029.296-49, residente e domiciliado(a) na cidade de Lambari/MG, à Rua Ronnaldo Raimundi, nº 49, Bairro Novo Horizonte, CEP: 37.480-000"
+    },
+    "numero_cedula": {
+      "type": "string",
+      "description": "Número de identificação da Cédula de Crédito Bancário.",
+      "example": "1617596"
+    },
+    "data_emissao_cedula": {
+      "type": "string",
+      "description": "Data de emissão da cédula de crédito bancário. Formato: DD/MM/AAAA",
+      "example": "25/05/2023"
+    },
+    "valor_contratado": {
+      "type": "string",
+      "description": "Valor total contratado/financiado na cédula, com R$ e extenso. Formato: 'R$ XX.XXX,XX (valor por extenso)'",
+      "example": "R$ 33.099,30 (trinta e três mil e noventa e nove reais e trinta centavos)"
+    },
+    "quantidade_parcelas": {
+      "type": "string",
+      "description": "Quantidade de parcelas mensais com número por extenso entre parênteses. Formato: 'NN (número por extenso)'",
+      "example": "60 (sessenta)"
+    },
+    "data_inicio_pagamentos": {
+      "type": "string",
+      "description": "Data de vencimento da primeira parcela. Formato: DD/MM/AAAA",
+      "example": "15/06/2023"
+    },
+    "data_termino_pagamentos": {
+      "type": "string",
+      "description": "Data de vencimento da última parcela. Formato: DD/MM/AAAA",
+      "example": "15/05/2028"
+    },
+    "texto_amortizacao_cotas": {
+      "type": "string",
+      "description": "Parágrafo completo sobre amortização de cotas da cooperativa. Se houve amortização: 'De acordo com o estatuto social da cooperativa, foi amortizado na operação o valor de R$ X.XXX,XX (valor por extenso) à título de devolução de cotas.' Se NÃO houve: deixar como string vazia ''.",
+      "example": "De acordo com o estatuto social da cooperativa, foi amortizado na operação o valor de R$ 3.152,30 (três mil, cento e cinquenta e dois reais, trinta centavos) à título de devolução de cotas.",
+      "conditional": true
+    },
+    "valor_execucao": {
+      "type": "string",
+      "description": "Valor total do saldo devedor sendo executado (da planilha de débito atualizada), com R$ e extenso seguido de vírgula. Formato: 'R$ XX.XXX,XX (valor por extenso),'",
+      "example": "R$ 29.540,74 (vinte e nove mil, quinhentos e quarenta reais e setenta e quatro centavos),"
+    },
+    "valor_citacao": {
+      "type": "string",
+      "description": "Valor total para citação do devedor, com R$ e extenso seguido de vírgula. Formato: 'R$ XX.XXX,XX (valor por extenso),'",
+      "example": "R$ 29.540,74 (vinte e nove mil, quinhentos e quarenta reais e setenta e quatro centavos),"
+    },
+    "valor_causa": {
+      "type": "string",
+      "description": "Valor atribuído à causa com R$ e extenso, seguido de ponto final. Formato: 'R$ XX.XXX,XX (valor por extenso).'",
+      "example": "R$29.540,74 (vinte e nove mil, quinhentos e quarenta reais e setenta e quatro centavos)."
+    },
+    "data_documento": {
+      "type": "string",
+      "description": "Data de elaboração da petição por extenso. Formato: 'D de mês de AAAA'",
+      "example": "4 de dezembro de 2025"
+    }
+  }
+}
