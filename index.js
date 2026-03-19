@@ -3,6 +3,7 @@ require('dotenv').config();
 const axios = require('axios');
 const { GoogleAIFileManager } = require("@google/generative-ai/server");
 const path = require('path');
+const fs = require('fs');
 const app = express();
 const port = 3000;
 
@@ -27,25 +28,15 @@ app.post('/llm/definir_tipo_de_peticao', async (req, res) => {
             return res.status(500).json({ error: 'GEMINI_API_KEY is not configured.' });
         }
 
-        const fileManager = new GoogleAIFileManager(geminiApiKey);
-        const filePath = path.join(__dirname, 'arquivo_prompt', 'checklist_analise_contratual.pdf');
-
-        // Upload the local file
-        const uploadResponse = await fileManager.uploadFile(filePath, {
-            mimeType: "application/pdf",
-            displayName: "checklist_analise_contratual.pdf",
-        });
-
-        console.log(`Uploaded file ${uploadResponse.file.displayName} as: ${uploadResponse.file.uri}`);
+        // Read the checklist markdown file as text
+        const checklistPath = path.join(__dirname, 'arquivo_prompt', 'checklist', 'checklist_analise_contratual.md');
+        const checklistContent = fs.readFileSync(checklistPath, 'utf-8');
 
         const parts = [];
 
-        // 1. Add the uploaded local file
+        // 1. Add the checklist as text context
         parts.push({
-            fileData: {
-                mimeType: uploadResponse.file.mimeType,
-                fileUri: uploadResponse.file.uri
-            }
+            text: `<checklist_analise_contratual>\n${checklistContent}\n</checklist_analise_contratual>`
         });
 
         // 2. Add files from the request body
@@ -60,7 +51,7 @@ app.post('/llm/definir_tipo_de_peticao', async (req, res) => {
 
         // 3. Add the text prompt
         parts.push({
-            text: "O arquivo checklist_analise_contratual.pdf contem um manual e instruções leia. Em seguida analise os outros arquivos em anexo para responder corretamente qual a classificação dos arquivos. Podendo ser: CÉDULA DE CRÉDITO BANCÁRIO; INSTRUMENTO PARTICULAR DE CONFISSÃO DE DÍVIDAS; ALIENAÇÃO FIDUCIÁRIA DE VEÍCULOS E MAQUINÁRIOS; CÉDULA RURAL; CRÉDITO PRÉ-APROVADO; CARTÃO DE CRÉDITO; DESCONTO DE TÍTULOS; DOCUMENTO NÃO VÁLIDO PARA AÇÃO JUDICIAL, defina baseado no documento de checklist e analise cuidadosamente pois temos varias opçoes parecidas"
+            text: "O conteúdo dentro de <checklist_analise_contratual> é o manual de análise contratual com os tipos de contrato e seus critérios de identificação. Analise cuidadosamente os arquivos em anexo e classifique o tipo de contrato baseado nas definições do checklist. Atenção: existem tipos parecidos, diferencie com base nos critérios específicos de cada um (nomenclatura, cláusulas, garantias, documentação presente)."
         });
 
         const response = await axios.post(
@@ -126,17 +117,57 @@ app.post('/llm/definir_tipo_de_peticao', async (req, res) => {
     }
 });
 
+// Mapping: tipo_de_analise -> schema file + extracao_dados .md file
+const TIPO_ANALISE_MAP = {
+    celula_credito_bancario: {
+        schema: 'schema_execucao_comum.json',
+        prompt_md: { dir: 'extracao_dados', file: '01_ccb_execucao_titulo_extrajudicial.md' }
+    },
+    confissao_divida: {
+        schema: 'schema_monitoria.json',
+        prompt_md: { dir: 'checklist', file: '02_instrumento_particular_confissao_dividas.md' }
+    },
+    alienacao_fidunciaria_veiculo: {
+        schema: 'schema_busca_apreensao.json',
+        prompt_md: { dir: 'extracao_dados', file: '02_ccb_busca_apreensao_veiculo.md' }
+    },
+    cedula_rural: {
+        schema: 'schema_cedula_produto_rural.json',
+        prompt_md: { dir: 'checklist', file: '04_cedula_rural.md' }
+    },
+    credito_pre_aprovado: {
+        schema: 'schema_cobranca_app.json',
+        prompt_md: { dir: 'extracao_dados', file: '03_contrato_pre_aprovado_app_cobranca.md' }
+    },
+    cartao_de_credito: {
+        schema: 'schema_cobranca_cartao.json',
+        prompt_md: { dir: 'checklist', file: '06_cartao_credito.md' }
+    },
+    desconto_titulos: {
+        schema: 'schema_peticao_execucao.json',
+        prompt_md: { dir: 'checklist', file: '07_desconto_titulos.md' }
+    }
+};
+
 app.post('/llm/dados_extract', async (req, res) => {
     try {
-        const { data, dados, add_doc } = req.body;
-        console.log("Reciving request /llm/dados_extract");
+        const { data, dados, add_doc, tipo_de_analise } = req.body;
+        console.log("Reciving request /llm/dados_extract", tipo_de_analise ? `tipo_de_analise: ${tipo_de_analise}` : '');
 
         if (!data || !Array.isArray(data)) {
             return res.status(400).json({ error: 'Invalid input format. "data" array is required.' });
         }
 
-        if (!dados || typeof dados !== 'object') {
-            return res.status(400).json({ error: 'Invalid input format. "dados" object is required.' });
+        // Validate: either tipo_de_analise or dados must be provided
+        if (!tipo_de_analise && (!dados || typeof dados !== 'object')) {
+            return res.status(400).json({ error: 'Invalid input format. Either "tipo_de_analise" or "dados" object is required.' });
+        }
+
+        // Validate tipo_de_analise value if provided
+        if (tipo_de_analise && !TIPO_ANALISE_MAP[tipo_de_analise]) {
+            return res.status(400).json({
+                error: `Invalid "tipo_de_analise": "${tipo_de_analise}". Valid values: ${Object.keys(TIPO_ANALISE_MAP).join(', ')}`
+            });
         }
 
         const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -145,57 +176,107 @@ app.post('/llm/dados_extract', async (req, res) => {
         }
 
         const parts = [];
+        let properties = {};
+        let required = [];
 
-        // Add reference document if add_doc === 5
-        if (add_doc === 5) {
-            const fileManager = new GoogleAIFileManager(geminiApiKey);
-            const filePath = path.join(__dirname, 'arquivo_prompt', '005_ALTERADO_INFORMAÇÕES EXTRAÍDAS PARA PETIÇÃO INICIAL - CREDIVAR.docx');
-
-            const uploadResponse = await fileManager.uploadFile(filePath, {
-                mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                displayName: "005_ALTERADO_INFORMAÇÕES EXTRAÍDAS PARA PETIÇÃO INICIAL - CREDIVAR.docx",
-            });
-
-            console.log(`Uploaded reference file ${uploadResponse.file.displayName} as: ${uploadResponse.file.uri}`);
-
-            // Add the reference document first
-            parts.push({
-                fileData: {
-                    mimeType: uploadResponse.file.mimeType,
-                    fileUri: uploadResponse.file.uri
-                }
-            });
-        }
-
-        // Add files from the request body
-        data.forEach(item => {
-            parts.push({
-                fileData: {
-                    mimeType: item.mimeType,
-                    fileUri: item.fileUri
-                }
-            });
-        });
-
-        // Add text prompt with conditional instruction
-        const textPrompt = add_doc === 5
-            ? "O primeiro arquivo em anexo é um mapa de referência que indica onde encontrar as informações nos outros documentos. Use-o como guia para localizar e extrair as informações solicitadas dos demais documentos anexos."
-            : "Analise os documentos em anexo e extraia as informações solicitadas.";
-
+        // Always include credivar_info_extraidas.md as reference context
+        const credivarPath = path.join(__dirname, 'arquivo_prompt', 'extracao_dados', 'credivar_info_extraidas.md');
+        const credivarContent = fs.readFileSync(credivarPath, 'utf-8');
         parts.push({
-            text: textPrompt
+            text: `<referencia_geral_extracao>\n${credivarContent}\n</referencia_geral_extracao>`
         });
 
-        // Dynamic schema generation
-        const properties = {};
-        const required = [];
+        if (tipo_de_analise) {
+            // --- New flow: tipo_de_analise defined ---
+            const config = TIPO_ANALISE_MAP[tipo_de_analise];
 
-        for (const [key, description] of Object.entries(dados)) {
-            properties[key] = {
-                type: "string",
-                description: description
-            };
-            required.push(key);
+            // 2. Include the specific prompt .md for this tipo_de_analise
+            const promptMdPath = path.join(__dirname, 'arquivo_prompt', config.prompt_md.dir, config.prompt_md.file);
+            if (fs.existsSync(promptMdPath)) {
+                const promptMdContent = fs.readFileSync(promptMdPath, 'utf-8');
+                parts.push({
+                    text: `<instrucoes_especificas_tipo>\n${promptMdContent}\n</instrucoes_especificas_tipo>`
+                });
+            }
+
+            // 3. Add files from the request body
+            data.forEach(item => {
+                parts.push({
+                    fileData: {
+                        mimeType: item.mimeType,
+                        fileUri: item.fileUri
+                    }
+                });
+            });
+
+            // 4. Add the text prompt
+            parts.push({
+                text: "O conteúdo em <referencia_geral_extracao> é o manual geral de referência para extração de dados de contratos. O conteúdo em <instrucoes_especificas_tipo> são as instruções específicas para este tipo de análise. Use ambos como guia para localizar e extrair as informações solicitadas dos documentos em anexo. Extraia todos os campos solicitados com precisão, seguindo os formatos e exemplos indicados no schema."
+            });
+
+            // 5. Build schema from JSON file
+            const schemaPath = path.join(__dirname, 'novos_arquivos', 'schemas', config.schema);
+            const schemaContent = JSON.parse(fs.readFileSync(schemaPath, 'utf-8'));
+
+            // Convert schema properties to Gemini format (remove non-standard fields)
+            for (const [key, prop] of Object.entries(schemaContent.properties)) {
+                properties[key] = {
+                    type: prop.type || "string",
+                    description: prop.description || key
+                };
+            }
+            required = schemaContent.required || Object.keys(schemaContent.properties);
+
+        } else {
+            // --- Legacy flow: dados provided ---
+
+            // Add reference document if add_doc === 5
+            if (add_doc === 5) {
+                const fileManager = new GoogleAIFileManager(geminiApiKey);
+                const filePath = path.join(__dirname, 'arquivo_prompt', '005_ALTERADO_INFORMAÇÕES EXTRAÍDAS PARA PETIÇÃO INICIAL - CREDIVAR.docx');
+
+                const uploadResponse = await fileManager.uploadFile(filePath, {
+                    mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    displayName: "005_ALTERADO_INFORMAÇÕES EXTRAÍDAS PARA PETIÇÃO INICIAL - CREDIVAR.docx",
+                });
+
+                console.log(`Uploaded reference file ${uploadResponse.file.displayName} as: ${uploadResponse.file.uri}`);
+
+                parts.push({
+                    fileData: {
+                        mimeType: uploadResponse.file.mimeType,
+                        fileUri: uploadResponse.file.uri
+                    }
+                });
+            }
+
+            // Add files from the request body
+            data.forEach(item => {
+                parts.push({
+                    fileData: {
+                        mimeType: item.mimeType,
+                        fileUri: item.fileUri
+                    }
+                });
+            });
+
+            // Add text prompt with conditional instruction
+            const textPrompt = add_doc === 5
+                ? "O conteúdo em <referencia_geral_extracao> é o manual geral de referência para extração de dados. Use-o junto com o documento de referência em anexo como guia para localizar e extrair as informações solicitadas dos demais documentos anexos."
+                : "O conteúdo em <referencia_geral_extracao> é o manual geral de referência para extração de dados de contratos. Use-o como guia para localizar e extrair as informações solicitadas dos documentos em anexo.";
+
+            parts.push({
+                text: textPrompt
+            });
+
+            // Dynamic schema generation from dados
+            for (const [key, description] of Object.entries(dados)) {
+                properties[key] = {
+                    type: "string",
+                    description: description
+                };
+                required.push(key);
+            }
         }
 
         const response = await axios.post(
