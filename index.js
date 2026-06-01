@@ -121,7 +121,7 @@ app.post('/llm/definir_tipo_de_peticao', async (req, res) => {
 const TIPO_ANALISE_MAP = {
     celula_credito_bancario: {
         schema: 'schema_peticao_execucao.json',
-        prompt_md: { dir: 'extracao_dados', file: '04_requisitos_modelos_peticao.md' }
+        prompt_md: { dir: 'extracao_dados', file: '01_ccb_execucao_titulo_extrajudicial.md' }
     },
     confissao_divida: {
         schema: 'schema_monitoria.json',

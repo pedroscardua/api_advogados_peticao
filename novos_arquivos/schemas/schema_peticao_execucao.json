@@ -32,22 +32,22 @@
     },
     "nome_empresa_executada": {
       "type": "string",
-      "description": "Razão social completa da empresa executada (devedora principal), conforme consta no contrato ou documentos societários.",
+      "description": "Razão social completa do emitente/devedor principal da CCB, extraída obrigatoriamente da seção \"II - DADOS DO(S) EMITENTE(S)\". Se o emitente for Pessoa Jurídica, retornar a razão social/CNPJ do emitente; nunca substituir este campo pelo avalista, sócio ou devedor solidário pessoa física.",
       "example": "BARBARA PORTO FRAGA JUNQUEIRA LTDA"
     },
     "qualificacao_empresa_executada": {
       "type": "string",
-      "description": "Qualificação jurídica completa da empresa executada, incluindo natureza jurídica, CNPJ e endereço completo. Formato: 'pessoa jurídica de direito privado regularmente inscrita no CNPJ/MF sob o nº XX.XXX.XXX/XXXX-XX, com sede na cidade de CIDADE/UF à ENDEREÇO, nº NUM, BAIRRO, CEP: XXXXX-XXX'",
+      "description": "Qualificação jurídica completa do emitente/devedor principal extraído da seção \"II - DADOS DO(S) EMITENTE(S)\", incluindo natureza jurídica, CNPJ e endereço completo quando for Pessoa Jurídica. Não usar dados de avalista neste campo. Formato: 'pessoa jurídica de direito privado regularmente inscrita no CNPJ/MF sob o nº XX.XXX.XXX/XXXX-XX, com sede na cidade de CIDADE/UF à ENDEREÇO, nº NUM, BAIRRO, CEP: XXXXX-XXX'",
       "example": "pessoa jurídica de direito privado regularmente inscrita no CNPJ/MF sob o nº 33.542.682/0001-52, com sede na cidade de Varginha/MG à Rua alameda dos Pinheiros, nº 45, Jardim Kennedy, CEP: 35800-431"
     },
     "nome_socio_executado": {
       "type": "string",
-      "description": "Nome completo do sócio ou avalista pessoa física que também é executado na ação. Extrair da cédula de crédito ou contrato.",
+      "description": "Nome completo do avalista/sócio/devedor solidário pessoa física que também será executado. Extrair apenas das seções de avalista, garantidor, devedor solidário ou assinaturas equivalentes; nunca usar este campo para o emitente Pessoa Jurídica.",
       "example": "LUIS FLAVIO SANTOS XAVIER JUNQUEIRA"
     },
     "qualificacao_socio_executado": {
       "type": "string",
-      "description": "Qualificação completa do sócio executado incluindo nacionalidade, estado civil, profissão, CPF e endereço completo. Deve começar com vírgula e espaço. Formato: ', brasileiro(a), casado(a), PROFISSÃO, inscrito(a) no CPF/MF sob o nº XXX.XXX.XXX-XX, residente e domiciliado(a) na cidade de CIDADE/UF, à ENDEREÇO, nº NUM, bairro BAIRRO, CEP: XXXXX-XXX'",
+      "description": "Qualificação completa do avalista/sócio/devedor solidário pessoa física, incluindo nacionalidade, estado civil, profissão, CPF e endereço completo. Deve começar com vírgula e espaço. Não incluir dados do emitente Pessoa Jurídica neste campo. Formato: ', brasileiro(a), casado(a), PROFISSÃO, inscrito(a) no CPF/MF sob o nº XXX.XXX.XXX-XX, residente e domiciliado(a) na cidade de CIDADE/UF, à ENDEREÇO, nº NUM, bairro BAIRRO, CEP: XXXXX-XXX'",
       "example": ", brasileiro(a), casado(a), administrador(a), inscrito(a) no CPF/MF sob o nº 077.477.006-60, residente e domiciliado(a) na cidade de Três Corações/MG, à Rua Luciano Peixoto Andrade, nº 182, bairro Triângulo, CEP: 37417-000"
     },
     "numero_cedula_credito": {
@@ -62,7 +62,7 @@
     },
     "nome_empresa_executada_curto": {
       "type": "string",
-      "description": "Nome ou razão social da empresa executada conforme aparece na cédula de crédito. Pode ser forma abreviada ou sem sufixo societário (LTDA, S/A, etc.).",
+      "description": "Somente o nome ou razão social do emitente/devedor principal conforme aparece na CCB, para uso no parágrafo II - DOS FATOS E FUNDAMENTOS JURÍDICOS. Deve vir sem qualificação, sem CNPJ, sem CPF, sem endereço e sem dados de avalista. Pode ser forma abreviada ou sem sufixo societário (LTDA, S/A, etc.).",
       "example": "BARBARA PORTO FRAGA JUNQUEIRA"
     },
     "texto_avalista": {
@@ -73,7 +73,7 @@
     },
     "nome_socio_executado_avalista": {
       "type": "string",
-      "description": "Nome completo do sócio/avalista conforme consta na cédula, precedido de espaço e seguido de vírgula. Se não houver avalista: deixar como string vazia ''.",
+      "description": "Somente o nome completo do sócio/avalista conforme consta na cédula, precedido de espaço e seguido de vírgula, para uso no parágrafo II - DOS FATOS E FUNDAMENTOS JURÍDICOS. Deve vir sem qualificação, sem CPF, sem endereço e sem dados do emitente. Se não houver avalista: deixar como string vazia ''.",
       "example": " LUIS FLAVIO SANTOS XAVIER JUNQUEIRA,",
       "conditional": true
     },
