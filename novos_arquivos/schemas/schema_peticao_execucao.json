@@ -5,6 +5,7 @@
   "type": "object",
   "required": [
     "comarca",
+    "executados",
     "nome_empresa_executada",
     "qualificacao_empresa_executada",
     "nome_socio_executado",
@@ -29,6 +30,11 @@
       "type": "string",
       "description": "Cidade e estado da comarca onde o processo será distribuído. Formato: CIDADE/UF",
       "example": "VARGINHA/MG"
+    },
+    "executados": {
+      "type": "string",
+      "description": "Campo unico para substituir o placeholder do preambulo da petição. Montar uma frase única com todos os executados/responsáveis, incluindo o emitente/devedor principal e todos os avalistas, sócios, garantidores ou devedores solidários que também devam figurar no polo passivo. Quando houver mais de um executado, separar por vírgula e usar 'e' antes do último. Deve conter nome_empresa_executada + qualificacao_empresa_executada e, se houver, nome_socio_executado + qualificacao_socio_executado para cada avalista/responsável pessoa física. Não incluir a expressão 'em face de', não incluir 'pelos motivos', não inventar partes e não repetir este texto na seção II - DOS FATOS E FUNDAMENTOS JURÍDICOS.",
+      "example": "BARBARA PORTO FRAGA JUNQUEIRA LTDA, pessoa jurídica de direito privado regularmente inscrita no CNPJ/MF sob o nº 33.542.682/0001-52, com sede na cidade de Varginha/MG à Rua alameda dos Pinheiros, nº 45, Jardim Kennedy, CEP: 35800-431, e LUIS FLAVIO SANTOS XAVIER JUNQUEIRA, brasileiro(a), casado(a), administrador(a), inscrito(a) no CPF/MF sob o nº 077.477.006-60, residente e domiciliado(a) na cidade de Três Corações/MG, à Rua Luciano Peixoto Andrade, nº 182, bairro Triângulo, CEP: 37417-000"
     },
     "nome_empresa_executada": {
       "type": "string",

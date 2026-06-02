@@ -149,6 +149,22 @@ const TIPO_ANALISE_MAP = {
     }
 };
 
+function addCcbExecutionAliases(jsonResponse, tipoDeAnalise) {
+    if (tipoDeAnalise !== 'celula_credito_bancario' || !jsonResponse || typeof jsonResponse !== 'object') {
+        return jsonResponse;
+    }
+
+    if (typeof jsonResponse.executados === 'string' && !jsonResponse.executados_pessoa_fisica) {
+        jsonResponse.executados_pessoa_fisica = jsonResponse.executados;
+    }
+
+    if (typeof jsonResponse.executados_pessoa_fisica === 'string' && !jsonResponse.executados) {
+        jsonResponse.executados = jsonResponse.executados_pessoa_fisica;
+    }
+
+    return jsonResponse;
+}
+
 app.post('/llm/dados_extract', async (req, res) => {
     try {
         const { data, dados, add_doc, tipo_de_analise } = req.body;
@@ -311,6 +327,7 @@ app.post('/llm/dados_extract', async (req, res) => {
                 const textResponse = candidate.content.parts[0].text;
                 try {
                     const jsonResponse = JSON.parse(textResponse);
+                    addCcbExecutionAliases(jsonResponse, tipo_de_analise);
                     return res.json(jsonResponse);
                 } catch (e) {
                     console.error("Error parsing Gemini response:", textResponse);

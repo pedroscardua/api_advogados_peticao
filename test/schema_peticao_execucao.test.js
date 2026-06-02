@@ -42,6 +42,50 @@ test('schema de CCB diferencia emitente principal de avalista', () => {
   assert.match(nomeAvalista, /sem qualifica/i);
 });
 
+test('schema de CCB pede um campo unico de executados para o preambulo', () => {
+  const schema = JSON.parse(
+    fs.readFileSync(
+      path.join(rootDir, 'novos_arquivos', 'schemas', 'schema_peticao_execucao.json'),
+      'utf8',
+    ),
+  );
+
+  assert.ok(schema.required.includes('executados'));
+  assert.ok(schema.properties.executados);
+  assert.equal(schema.properties.executados_pessoa_fisica, undefined);
+
+  const descricao = schema.properties.executados.description;
+  assert.match(descricao, /campo unico/i);
+  assert.match(descricao, /emitente\/devedor principal/i);
+  assert.match(descricao, /avalista/i);
+  assert.match(descricao, /mais de um/i);
+  assert.match(descricao, /em face de/i);
+});
+
+test('API cria alias legado sem pedir executados_pessoa_fisica para a LLM', () => {
+  const indexSource = fs.readFileSync(path.join(rootDir, 'index.js'), 'utf8');
+
+  assert.match(indexSource, /function addCcbExecutionAliases/);
+  assert.match(indexSource, /executados_pessoa_fisica\s*=\s*jsonResponse\.executados/);
+  assert.match(indexSource, /addCcbExecutionAliases\(jsonResponse,\s*tipo_de_analise\)/);
+});
+
+test('workflow n8n de CCB substitui o placeholder canonico executados', () => {
+  const workflow = JSON.parse(
+    fs.readFileSync(path.join(rootDir, 'n8n_workflow', 'ANALSADOR  DOCs Form.json'), 'utf8'),
+  );
+  const googleDocsNode = workflow.nodes.find((node) => node.name === 'Google Docs2');
+  const actions = googleDocsNode.parameters.actionsUi.actionFields;
+
+  assert.ok(
+    actions.some(
+      (action) =>
+        action.text === '{{executados}}' &&
+        action.replaceText === "={{ $('Edit Fields15').item.json.executados }}",
+    ),
+  );
+});
+
 test('template de CCB deixa nomes e qualificacoes dos executados em negrito', () => {
   const templatePath = path.join(
     rootDir,

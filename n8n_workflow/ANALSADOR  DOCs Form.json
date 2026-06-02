@@ -2356,6 +2356,12 @@
               "text": "{{data_documento}}",
               "replaceText": "={{ $('Edit Fields15').item.json.data_documento }}",
               "matchCase": true
+            },
+            {
+              "action": "replaceAll",
+              "text": "{{executados}}",
+              "replaceText": "={{ $('Edit Fields15').item.json.executados }}",
+              "matchCase": true
             }
           ]
         }

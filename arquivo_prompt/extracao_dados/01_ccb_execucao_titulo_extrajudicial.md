@@ -4,6 +4,7 @@
 
 * O **EMITENTE/DEVEDOR PRINCIPAL** deve ser extraído da seção **II \- DADOS DO(S) EMITENTE(S)** da CCB. Se o emitente for Pessoa Jurídica, o nome e a qualificação da empresa devem aparecer na qualificação inicial da petição.
 * O **AVALISTA/SÓCIO/DEVEDOR SOLIDÁRIO** deve ser extraído apenas das seções de avalista, garantidor, devedor solidário ou assinaturas equivalentes. Não use avalista no lugar do emitente.
+* O campo **executados** é o texto completo e único do polo passivo para o preâmbulo da petição. Monte esse campo concatenando o emitente/devedor principal com sua qualificação completa e todos os avalistas/responsáveis com suas qualificações completas, em uma frase natural, separada por vírgulas e com **e** antes do último executado. Não inclua a expressão "em face de" e não inclua "pelos motivos".
 * Na seção **II \- DOS FATOS E FUNDAMENTOS JURÍDICOS**, mencionar apenas o nome do emitente e o nome do(s) avalista(s), se houver. Não repetir qualificação, CNPJ, CPF, endereço, nacionalidade, estado civil ou profissão nessa seção.
 
 1. **CHECAGEM:** Inicialmente é feita a CHECAGEM dos dados. O nome do devedor (campo **NOME)**, número do contrato (campo **Nº DA CÉDULA)**, data da operação (campo **DATA EMISSÃO**), valor da operação (campo **VALOR CONTRATADO**), valor de parcela (campo **valor individual**) e taxa de juros (campo **TAXA EFETIVA DE JUROS REMUNERATÓRIOS**), devem ser compatíveis com a planilha de cálculo:
